@@ -11,7 +11,7 @@ package bezier.math;
 //
 //                           Russia  Samara  06.02.2007
 //==============================================================================================================
-
+// haxe port: Dima (deep) Granetchi <system.grand@gmail.com>
 /**
  * В классе представлены методы для решения уравнений с 1 неизвестным.<BR/>
  * Если в уравнении n-ой степени ведущие коэффициенты нулевые, то все равно можно 
@@ -42,7 +42,7 @@ class Equations {
 	 * 
 	 * @example
 	 * <pre>
-	 *	import ru.bezier.math.Equations
+	 *	import bezier.math.Equations;
 	 *	
 	 *	var solutions = Equations.solveEquation(1,0,3,4); // x^3+3*x+4=0
 	 *	trace(solutions);
@@ -71,7 +71,7 @@ class Equations {
 	 *
 	 * @example
 	 * <pre>
-	 *	import ru.bezier.math.Equations
+	 *	import bezier.math.Equations;
 	 *	var solutions = Equations.solveEquation(1,3); // x+3=0
 	 *	trace(solutions);
 	 * </pre>
@@ -99,7 +99,7 @@ class Equations {
 	 *
 	 * @example
 	 * <pre>
-	 *	import ru.bezier.math.Equations
+	 *	import bezier.math.Equations;
 	 *	var solutions = Equations.solveEquation(3,4,1); // 3*x^2+4*x+1=0
 	 *	trace(solutions);
 	 * </pre>
@@ -142,7 +142,7 @@ class Equations {
 	 *
 	 * @example
 	 * <pre>
-	 *	import ru.bezier.math.Equations
+	 *	import bezier.math.Equations;
 	 *	var solutions = Equations.solveEquation(1,0,3,4); // x^3+3*x+4=0
 	 *	trace(solutions);
 	 * </pre>
@@ -192,7 +192,7 @@ class Equations {
 	 *
 	 * @example
 	 * <pre>
-	 *	import ru.bezier.math.Equations
+	 *	import bezier.math.Equations;
 	 *	var solutions = Equations.solveEquation(1,0,3,4,2); // x^4+3*x^2+4*x+2=0
 	 *	trace(solutions);
 	 * </pre>
