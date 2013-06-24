@@ -1,0 +1,7 @@
+-cp src/main/haxe
+-cp src/test/haxe
+-neko target/bezier-test.n
+-main Tests
+
+--next
+-cmd neko target/bezier-test.n
