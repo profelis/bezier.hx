@@ -12,6 +12,8 @@ class Tests
 	{
 		var r = new TestRunner();
 		r.add(new EquationsTest());
+		r.add(new PointTest());
+		r.add(new RectTest());
 		r.run();
 	}
 	
