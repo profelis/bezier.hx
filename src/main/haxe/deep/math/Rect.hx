@@ -59,6 +59,19 @@ class Rect {
 		this.height = height;
 	}
 	
+	public function intersects(b:Rect):Bool {
+		
+		var x0 = x < b.x ? b.x : x;
+		var x1 = right > b.right ? b.right : right;
+		
+		if (x1 <= x0) return false;
+		
+		var y0 = y < b.y ? b.y : y;
+		var y1 = bottom > b.bottom ? b.bottom : bottom;
+		
+		return y1 > y0;
+	}
+	
 	public function toString() {
 		return '{Rect x:$x, y:$y, w:$width, h:$height}';
 	}

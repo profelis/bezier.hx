@@ -155,4 +155,5 @@ interface IParametric {
 	 **/
 	 
 	function toString():String;
+
 }

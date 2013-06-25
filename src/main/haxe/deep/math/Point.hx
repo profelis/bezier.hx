@@ -54,6 +54,11 @@ class Point {
 		y += b.y;
 	}
 	
+	inline public function offset(dx:Float, dy:Float):Void {
+		x += dx;
+		y += dy;
+	}
+	
 	inline public function set(x:Float, y:Float):Void {
 		this.x = x;
 		this.y = y;
