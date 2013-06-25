@@ -72,11 +72,15 @@ class Rect {
 		return y1 > y0;
 	}
 	
+	inline public function containsPoint(p:Point):Bool {
+		return p.x >= x && p.x <= x + width && p.y <= y && p.y >= y + height;
+	}
+	
 	public function toString() {
 		return '{Rect x:$x, y:$y, w:$width, h:$height}';
 	}
 	
-	#if flash || nme || openfl
+	#if (flash || nme || openfl)
 	inline public function toGeomRect(out:flash.geom.Rectangle):flash.geom.Rectangle {
 		if (out == null) 
 			return new flash.geom.Rectangle(x, y, width, height);
@@ -89,7 +93,7 @@ class Rect {
 		}
 	}
 	
-	inline public function fromGeomPoint(p:flash.geom.Rectangle):Point {
+	inline public function fromGeomPoint(p:flash.geom.Rectangle):Void {
 		x = p.x;
 		y = p.y;
 		width = p.width;

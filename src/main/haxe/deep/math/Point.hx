@@ -85,7 +85,7 @@ class Point {
 	}
 	
 	inline static public function interpolate(a:Point, b:Point, f:Float) {
-		return new Point(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f);
+		return new Point(b.x + (a.x - b.x) * f, b.y + (a.y - b.y) * f);
 	}
 	
 	inline static public function polar(len:Float, angle:Float):Point {
@@ -96,7 +96,7 @@ class Point {
 		return '{$x; $y}';
 	}
 	
-	#if flash || nme || openfl
+	#if (flash || nme || openfl)
 	inline public function toGeomPoint(out:flash.geom.Point):flash.geom.Point {
 		if (out == null) 
 			return new flash.geom.Point(x, y);
@@ -107,7 +107,7 @@ class Point {
 		}
 	}
 	
-	inline public function fromGeomPoint(p:flash.geom.Point):Point {
+	inline public function fromGeomPoint(p:flash.geom.Point):Void {
 		x = p.x;
 		y = p.y;
 	}
