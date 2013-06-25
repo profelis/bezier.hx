@@ -2,8 +2,9 @@ package bezier;
 
 // translator: Flastar http://flastar.110mb.com
 
+import bezier.math.Equations;
 import deep.math.Point;
-import flash.math.Equations;	
+import deep.math.Rect;
 
 /* *
  * Класс Line представляет линию в параметрическом представлении, 
@@ -221,7 +222,7 @@ import flash.math.Equations;
 	 * 	return new Line(randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const line:Line = randomLine();
+	 * var line:Line = randomLine();
 	 * trace("random line: "+line);
 	 * </listing>
 	 * 
@@ -253,7 +254,7 @@ import flash.math.Equations;
 	 * 	return new Line(randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const line:Line = randomLine();
+	 * var line:Line = randomLine();
 	 * trace("random line: "+line);
 	 * </listing>
 	 * 
@@ -290,8 +291,8 @@ import flash.math.Equations;
 	 * 	return new Line(randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const line:Line = randomLine();
-	 * const clone:Line = line.clone();
+	 * var line:Line = randomLine();
+	 * var clone:Line = line.clone();
 	 * trace("random line: "+line);
 	 * trace("clone line: "+clone);
 	 * trace(line == clone); //false
@@ -322,8 +323,8 @@ import flash.math.Equations;
 	 * 	return new Line(randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const line:Line = randomLine();
-	 * const clone:Line = line.clone();
+	 * var line:Line = randomLine();
+	 * var clone:Line = line.clone();
 	 * trace("random line: " + line);
 	 * trace("clone line: " + clone);
 	 * trace(line == clone); //false
@@ -351,7 +352,7 @@ import flash.math.Equations;
 	 * import bezier.Line;
 	 * import bezier.Point;
 	 *		
-	 * const line:Line = new Line(new Point(100, 300), new Point(100, 200));
+	 * var line:Line = new Line(new Point(100, 300), new Point(100, 200));
 	 * var point:Point = line.lineAsPoint();
 	 * trace("Is it point? "+ (point != null)); //Is it point? false
 	 * line.end.y = 300;
@@ -380,7 +381,7 @@ import flash.math.Equations;
 	 * import bezier.Line;
 	 * import bezier.Point;
 	 *		
-	 * const line:Line = new Line(new Point(100, 300), new Point(100, 200));
+	 * var line:Line = new Line(new Point(100, 300), new Point(100, 200));
 	 * var point:Point = line.lineAsPoint();
 	 * trace("Is it point? "+ (point != null)); //Is it point? false
 	 * line.end.y = 300;
@@ -411,7 +412,7 @@ import flash.math.Equations;
 	 * Измеряется в радианах, от положительного направления оси X к положительному направлению оси Y (стандартная схема).
 	 * Возвращаемое значение находится в пределах от отрицательного PI до положительного PI.
 	 * 
-	 * @return Number угол наклона прямой
+	 * @return Float угол наклона прямой
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -424,7 +425,7 @@ import flash.math.Equations;
 	 * It is measured in radians, from the positive direction of the X-axis to the positive direction of axis Y (the standard scheme).
 	 * The return value is in the range from negative PI to positive PI.
 	 * 
-	 * @return Number inclination of line
+	 * @return Float inclination of line
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -450,7 +451,7 @@ import flash.math.Equations;
 	 * Поворачивает линию относительно точки <code>fulcrum</code> на заданный угол.
 	 * Если точка <code>fulcrum</code> не задана, используется (0,0);
 	 * 
-	 * @param value:Number угол поворота в радианах
+	 * @param value:Float угол поворота в радианах
 	 * @param fulcrum:Point центр вращения. 
 	 * 		
 	 * @langversion 3.0
@@ -463,7 +464,7 @@ import flash.math.Equations;
 	 * Rotates the line with respect to a point <code>fulcrum</code> to a selected angle.
 	 * If the point <code>fulcrum</code> was not given, the coordinates (0,0) are used;
 	 * 
-	 * @param value:Number angle of rotation in radians
+	 * @param value:Float angle of rotation in radians
 	 * @param fulcrum:Point center of rotation.
 	 *  
 	 * @langversion 3.0
@@ -487,8 +488,8 @@ import flash.math.Equations;
 	/* *
 	 * Смещает прямую на заданное расстояние по осям X и Y.  
 	 * 
-	 * @param dx:Number величина смещения по оси X
-	 * @param dy:Number величина смещения по оси Y
+	 * @param dx:Float величина смещения по оси X
+	 * @param dy:Float величина смещения по оси Y
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -499,8 +500,8 @@ import flash.math.Equations;
 	/**
 	 * Moves the object to the specified distance by X and Y axes.
 	 * 
-	 * @param dx:Number X axial displacement
-	 * @param dy:Number Y axial displacement
+	 * @param dx:Float X axial displacement
+	 * @param dy:Float Y axial displacement
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -518,7 +519,7 @@ import flash.math.Equations;
 	 * При задании свойства length возможно использовать и отрицательные значения, но не нулевые.
 	 * Изменение длины не меняет угла наклона прямой, а только перемещает точку end вдоль прямой.
 	 * 
-	 * @return Number длина отрезка
+	 * @return Float длина отрезка
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -532,7 +533,7 @@ import flash.math.Equations;
 	 * When specifying the properties of length, negative values may be used too, but not zero.
 	 * The change of length does not change the inclination of line, but only moves the end point along the line.
 	 * 
-	 * @return Number length of line segment
+	 * @return Float length of line segment
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -562,7 +563,7 @@ import flash.math.Equations;
 	/* *
 	 * Вычисляет и возвращает объект Point, представляющий точку на прямой, заданную параметром <code>time</code>.
 	 * 
-	 * @param time:Number итератор точки прямой
+	 * @param time:Float итератор точки прямой
 	 * @param point:Point=null необязательный параметр, объект Point. 
 	 * При передаче объекта Point в качестве аргумента, ему будут присвоены координаты точки и он же будет возвращен функцией.
 	 * В противном случае будет создан и возвращен новый объект Point с координатами точки.
@@ -585,9 +586,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
-	 *	const time:Number = Math.random();
-	 *	const point:Point = line.getPoint(Math.random());
+	 *	var line:Line = randomLine();	
+	 *	var time:Float = Math.random();
+	 *	var point:Point = line.getPoint(Math.random());
 	 *	trace(point);
 	 *	
 	 * </listing>
@@ -601,7 +602,7 @@ import flash.math.Equations;
 	/**
 	 * Calculates and returns an object Point, representing a point of line, given by parameter <code>time</code>.
 	 * 
-	 * @param time:Number iterator of a point of line
+	 * @param time:Float iterator of a point of line
 	 * @param point:Point=null optional parameter, object Point
 	 * 
 	 * @return Point point of line
@@ -623,9 +624,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
-	 *	const time:Number = Math.random();
-	 *	const point:Point = line.getPoint(Math.random());
+	 *	var line:Line = randomLine();	
+	 *	var time:Float = Math.random();
+	 *	var point:Point = line.getPoint(Math.random());
 	 *	trace(point);
 	 *	
 	 * </listing>
@@ -648,9 +649,9 @@ import flash.math.Equations;
 	 * Вычисляет time-итератор точки, находящейся на заданной дистанции 
 	 * по прямой от точки <code>start</code><BR/>
 	 *  
-	 * @param distance:Number дистанция по прямой до искомой точки.
+	 * @param distance:Float дистанция по прямой до искомой точки.
 	 * 
-	 * @return Number time-итератор искомой точки
+	 * @return Float time-итератор искомой точки
 	 *  
 	 * @example <listing version="3.0">
 	 * 
@@ -664,7 +665,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
+	 *	var line:Line = randomLine();	
 	 * 
 	 *	trace(line.getTimeByDistance(-10); // negative value
 	 *	trace(line.getTimeByDistance(line.length/2); // value between 0 and 1
@@ -681,8 +682,8 @@ import flash.math.Equations;
 	/**
 	 * Calculates time-iterator of the point, located at a given distance along the straight line from point <code>start</code>
 	 * 
-	 * @param distance:Number distance along the straight line to the desired point.
-	 * @return Number time-iterator of the desired point
+	 * @param distance:Float distance along the straight line to the desired point.
+	 * @return Float time-iterator of the desired point
 	 * 
 	 * @example <listing version="3.0">
 	 * 
@@ -696,7 +697,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
+	 *	var line:Line = randomLine();	
 	 * 
 	 *	trace(line.getTimeByDistance(-10); // negative value
 	 *	trace(line.getTimeByDistance(line.length/2); // value between 0 and 1
@@ -725,9 +726,9 @@ import flash.math.Equations;
 	 * значение соответствующей координаты точки <code>P<sub>time</sub></code>
 	 * не изменится. 
 	 * 
-	 * @param time:Number time-итератор точки кривой.
-	 * @param x:Number новое значение позиции точки по оси X.
-	 * @param y:Number новое значение позиции точки по оси Y.
+	 * @param time:Float time-итератор точки кривой.
+	 * @param x:Float новое значение позиции точки по оси X.
+	 * @param y:Float новое значение позиции точки по оси Y.
 	 * 
 	 * @example 
 	 * <listing version="3.0">
@@ -742,7 +743,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
+	 *	var line:Line = randomLine();	
 	 *	trace(line);
 	 *	 
 	 *	line.setPoint(0, 0, 0);
@@ -767,9 +768,9 @@ import flash.math.Equations;
 	 * If the parameter <code>x</code> and <code>y</code> is not determined, the value of the corresponding 
 	 * coordinates of the point <code>P<sub>time</sub></code> will not change.
 	 * 
-	 * @param time:Number time-iterator of the point of a curve.
-	 * @param x:Number new value of the position of a point on the axis X.
-	 * @param y:Number new value of the position of a point on the axis Y.
+	 * @param time:Float time-iterator of the point of a curve.
+	 * @param x:Float new value of the position of a point on the axis X.
+	 * @param y:Float new value of the position of a point on the axis Y.
 	 * 
 	 * @example 
 	 * <listing version="3.0">
@@ -784,7 +785,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();	
+	 *	var line:Line = randomLine();	
 	 *	trace(line);
 	 *	 
 	 *	line.setPoint(0, 0, 0);
@@ -803,21 +804,12 @@ import flash.math.Equations;
 	 * @lang rus
 	 */
 
-	public function setPoint(time : Number, x : Number = undefined, y : Number = undefined) : void 
+	public function setPoint(time:Float, ?x:Float, ?y:Float):Void 
 	{
-		if (isNaN(x) && isNaN(y)) 
-		{
-			return;
-		}
-		const point : Point = getPoint(time);
-		if (! isNaN(x)) 
-		{
-			point.x = x;
-		}
-		if (! isNaN(y)) 
-		{
-			point.y = y;
-		}
+		if (x == null && y == null) return;
+		var point = getPoint(time);
+		if (x != null) point.x = x;
+		if (y != null) point.y = y;
 		end.x = point.x + (point.x - start.x) * ((1 - time) / time);
 		end.y = point.y + (point.y - start.y) * ((1 - time) / time);
 	}
@@ -840,7 +832,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
+	 * var line:Line = randomLine();	
 	 * var boundBox:Rectangle = line.bounds;
 	 * trace(boundBox.x+" "+boundBox.y+" "+boundBox.width+" "+boundBox.height); 
 	 *  
@@ -870,7 +862,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
+	 * var line:Line = randomLine();	
 	 * var boundBox:Rectangle = line.bounds;
 	 * trace(boundBox.x+" "+boundBox.y+" "+boundBox.width+" "+boundBox.height); 
 	 *  
@@ -880,31 +872,27 @@ import flash.math.Equations;
 	 * @playerversion Flash 9.0
 	 */
 
-	public function get bounds() : Rectangle 
-	{
-		if (start.x > end.x) 
-		{
-			if (start.y > end.y) 
-			{
-				return new Rectangle(end.x, end.y, start.x - end.x, start.y - end.y);
-			} 
-			else 
-			{
-				return new Rectangle(end.x, start.y, start.x - end.x, end.y - start.y);
-			}
+	public var bounds(get, never):Rect;
+	
+	function get_bounds():Rect {
+	
+		if (start.x > end.x) {
+			return if (start.y > end.y) 
+					new Rect(end.x, end.y, start.x - end.x, start.y - end.y);
+				else
+					new Rect(end.x, start.y, start.x - end.x, end.y - start.y);
 		}
 		if (start.y > end.y) 
-		{
-			return new Rectangle(start.x, end.y, end.x - start.x, start.y - end.y);
-		} 
-		return new Rectangle(start.x, start.y, end.x - start.x, end.y - start.y);
+			return new Rect(start.x, end.y, end.x - start.x, start.y - end.y);
+		
+		return new Rect(start.x, start.y, end.x - start.x, end.y - start.y);
 	}
 
 	/* *
 	 * Возвращает отрезок - сегмент линии, заданный начальным и конечным итераторами.
 	 * 
-	 * @param fromTime:Number time-итератор начальной точки сегмента
-	 * @param toTime:Number time-итератор конечной точки сегмента кривой
+	 * @param fromTime:Float time-итератор начальной точки сегмента
+	 * @param toTime:Float time-итератор конечной точки сегмента кривой
 	 * 
 	 * @return Line;
 	 * 
@@ -920,9 +908,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
-	 * const segment1:Line = line.getSegment(1/3, 2/3);
-	 * const segment2:Line = line.getSegment(-1, 2);
+	 * var line:Line = randomLine();	
+	 * var segment1:Line = line.getSegment(1/3, 2/3);
+	 * var segment2:Line = line.getSegment(-1, 2);
 	 * 
 	 * </listing>
 	 * 
@@ -934,8 +922,8 @@ import flash.math.Equations;
 	/**
 	 * Returns the line segment, given by the initial and finite iterators.
 	 * 
-	 * @param fromTime:Number time-iterator of the initial point of the curve segment
-	 * @param toTime:Number time-iterator of the end point of the curve segment
+	 * @param fromTime:Float time-iterator of the initial point of the curve segment
+	 * @param toTime:Float time-iterator of the end point of the curve segment
 	 * 
 	 * @return Line;
 	 * 
@@ -951,9 +939,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
-	 * const segment1:Line = line.getSegment(1/3, 2/3);
-	 * const segment2:Line = line.getSegment(-1, 2);
+	 * var line:Line = randomLine();	
+	 * var segment1:Line = line.getSegment(1/3, 2/3);
+	 * var segment2:Line = line.getSegment(-1, 2);
 	 * 
 	 * </listing>
 	 * 
@@ -962,8 +950,7 @@ import flash.math.Equations;
 	 * @lang rus
 	 */
 
-	public function getSegment(fromTime : Number = 0, toTime : Number = 1) : Line 
-	{
+	inline public function getSegment(fromTime:Float = 0, toTime:Float = 1) : Line {
 		return new Line(getPoint(fromTime), getPoint(toTime));
 	}
 
@@ -972,9 +959,9 @@ import flash.math.Equations;
 	 * Возвращает длину сегмента прямой от точки <code>start</code> 
 	 * до точки на линии, заданной time-итератором.
 	 * 
-	 * @param time:Number параметр time конечной точки сегмента.
+	 * @param time:Float параметр time конечной точки сегмента.
 	 * 
-	 * @return Number длина сегмента прямой
+	 * @return Float длина сегмента прямой
 	 * 
 	 * 
 	 * @example В этом примере создается случайная прямая, 
@@ -992,11 +979,11 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
+	 * var line:Line = randomLine();	
 	 *	
-	 *	const middleDistance:Number = line.length/2;
-	 *	const middleTime:Number = line.getTimeByDistance(middleDistance);
-	 *	const segmentLength:Number = line.getSegmentLength(middleTime);
+	 *	var middleDistance:Float = line.length/2;
+	 *	var middleTime:Float = line.getTimeByDistance(middleDistance);
+	 *	var segmentLength:Float = line.getSegmentLength(middleTime);
 	 *	
 	 *	trace(middleDistance);
 	 *	trace(segmentLength);
@@ -1015,9 +1002,9 @@ import flash.math.Equations;
 	 * Returns the length of the line segment from the point <code>start</code> to 
 	 * a point on the line, given by time-iterator.
 	 * 
-	 * @param time:Number time parameter of the segments end point.
+	 * @param time:Float time parameter of the segments end point.
 	 * 
-	 * @return Number length of a line segment
+	 * @return Float length of a line segment
 	 * 
 	 * @example This example creates random line, calculates time-iterator of 
 	 * the middle point of a line, and then obtains the values of half of length 
@@ -1035,11 +1022,11 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();	
+	 * var line:Line = randomLine();	
 	 *	
-	 *	const middleDistance:Number = line.length/2;
-	 *	const middleTime:Number = line.getTimeByDistance(middleDistance);
-	 *	const segmentLength:Number = line.getSegmentLength(middleTime);
+	 *	var middleDistance:Float = line.length/2;
+	 *	var middleTime:Float = line.getTimeByDistance(middleDistance);
+	 *	var segmentLength:Float = line.getSegmentLength(middleTime);
 	 *	
 	 *	trace(middleDistance);
 	 *	trace(segmentLength);
@@ -1053,8 +1040,7 @@ import flash.math.Equations;
 	 * 
 	 **/
 
-	public function getSegmentLength(time : Number) : Number 
-	{
+	inline public function getSegmentLength(time:Float):Float {
 		return Point.distance(start, getPoint(time));
 	}
 
@@ -1069,8 +1055,8 @@ import flash.math.Equations;
 	 * Типичное применение данного метода - вычисление последовательности точек 
 	 * для рисования пунктирных линий. 
 	 *  
-	 * @param step:Number шаг, дистанция по прямой между точками.
-	 * @param startShift:Number дистанция по прямой, задающая смещение первой 
+	 * @param step:Float шаг, дистанция по прямой между точками.
+	 * @param startShift:Float дистанция по прямой, задающая смещение первой 
 	 * точки последовательности относительно точки <code>start</code>
 	 *  
 	 * @return Array массив итераторов
@@ -1086,13 +1072,13 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();
+	 * var line:Line = randomLine();
 	 * var points:Array = line.getTimesSequence(10, 0);
 	 *
 	 *  for(var i:uint=0; i<points.length; i+=2)
 	 *  {
-	 *  	var startSegmentTime:Number = points[i];
-	 *		var endSegmentTime:Number = points[i+1];
+	 *  	var startSegmentTime:Float = points[i];
+	 *		var endSegmentTime:Float = points[i+1];
 	 *		var segment:Line = line.getSegment(startSegmentTime, endSegmentTime);
 	 *		drawLine(segment);
 	 *  }
@@ -1111,8 +1097,8 @@ import flash.math.Equations;
 	 * In this case, if the value <code>startShift</code> exceeds the value <code>step</code>, the remainder of division by <code>step</code>will be used.
 	 * The typical application of this method is calculating a sequence of points for drawing dotted lines.
 	 * 
-	 * @param step:Number step, the distance along the straight line between the points.
-	 * @param startShift:Number the distance along the straight line, determining the shift of the first sequence point with respect to a point <code>start</code>
+	 * @param step:Float step, the distance along the straight line between the points.
+	 * @param startShift:Float the distance along the straight line, determining the shift of the first sequence point with respect to a point <code>start</code>
 	 * 
 	 * @return Array iterators array
 	 *  
@@ -1127,13 +1113,13 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const line:Line = randomLine();
+	 * var line:Line = randomLine();
 	 * var points:Array = line.getTimesSequence(10, 0);
 	 *
 	 *  for(var i:uint=0; i<points.length; i+=2)
 	 *  {
-	 *  	var startSegmentTime:Number = points[i];
-	 *		var endSegmentTime:Number = points[i+1];
+	 *  	var startSegmentTime:Float = points[i];
+	 *		var endSegmentTime:Float = points[i+1];
 	 *		var segment:Line = line.getSegment(startSegmentTime, endSegmentTime);
 	 *		drawLine(segment);
 	 *  }
@@ -1145,23 +1131,20 @@ import flash.math.Equations;
 	 * 
 	 */
 
-	public function getTimesSequence(step : Number, startShift : Number = 0) : Array 
-	{
-		step = Math.abs(step);
-		const distance : Number = (startShift % step + step) % step;
+	public function getTimesSequence(step:Float, startShift:Float = 0):Array<Float> {
+		if (step < 0) step = -step;
+		var distance = (startShift % step + step) % step;
 		
-		const times : Array = new Array();
-		const lineLength : Number = Point.distance(start, end);
-		if (distance > lineLength) 
-		{
-			return times;
-		}
-		const timeStep : Number = step / lineLength;
-		var time : Number = getTimeByDistance(distance);
+		var times = [];
+		var lineLength = Point.distance(start, end);
+		if (distance > lineLength) return times;
+		
+		var timeStep = step / lineLength;
+		var time = getTimeByDistance(distance);
 		
 		while (time <= 1) 
 		{
-			times[times.length] = time;
+			times.push(time);
 			time += timeStep;
 		}
 		return times;
@@ -1186,7 +1169,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var intersection:Intersection = line.intersectionPoint(new Point(100, 100));
 	 *	trace(intersection);
 	 *	
@@ -1219,7 +1202,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var intersection:Intersection = line.intersectionPoint(new Point(100, 100));
 	 *	trace(intersection);
 	 *	
@@ -1232,17 +1215,15 @@ import flash.math.Equations;
 	 * 
 	 */
 
-	public function intersectionPoint(target : Point) : Intersection 
-	{
-		var intersection : Intersection = new Intersection();
+	public function intersectionPoint(target:Point):Intersection {
 		
-		var closestTime : Number = this.getClosest(target);
-		var closestPoint : Point = this.getPoint(closestTime);
+		var intersection = new Intersection();
+		
+		var closestTime = this.getClosest(target);
+		var closestPoint = this.getPoint(closestTime);
 					
-		if (Point.distance(target, closestPoint) < PRECISION) 
-		{
-			intersection.addIntersection(closestTime, 0, this.isSegment, false);	
-		}
+		if (Point.distance(target, closestPoint) < PRECISION)
+			intersection.addIntersection(closestTime, 0, this.isSegment, false);
 
 		return intersection;
 	}
@@ -1276,7 +1257,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var target:Line = new Line(new Point(100, 100), new Point(200, 200));
 	 *	var intersection:Intersection = line.intersectionLine(target);
 	 *	trace(intersection);
@@ -1324,7 +1305,7 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var target:Line = new Line(new Point(100, 100), new Point(200, 200));
 	 *	var intersection:Intersection = line.intersectionLine(target);
 	 *	trace(intersection);
@@ -1339,63 +1320,55 @@ import flash.math.Equations;
 	 * @playerversion Flash 9.0
 	 */
 
-	public function intersectionLine(targetLine : Line) : Intersection 
+	public function intersectionLine(targetLine:Line):Intersection 
 	{
-		var intersection : Intersection = new Intersection();
+		var intersection = new Intersection();
 		
-		if (isSegment && targetLine.isSegment) 
-		{
-			var currentBoundBox : Rectangle = this.bounds;
-			var targetBoundBox : Rectangle = targetLine.bounds;
+		if (isSegment && targetLine.isSegment) {
+			var currentBoundBox = this.bounds;
+			var targetBoundBox = targetLine.bounds;
 					
-			if (currentBoundBox.right < targetBoundBox.left || targetBoundBox.right < currentBoundBox.left || targetBoundBox.bottom < currentBoundBox.top || currentBoundBox.bottom < targetBoundBox.top) 
-			{ 
-				return intersection;  
-			} 
+			if (currentBoundBox.right < targetBoundBox.left
+				|| targetBoundBox.right < currentBoundBox.left
+				|| targetBoundBox.bottom < currentBoundBox.top
+				|| currentBoundBox.bottom < targetBoundBox.top
+				) return intersection;  
 		}
 		
-		const startToEndVector : Point = POINT0;
+		var startToEndVector = POINT0;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
 		
-		const targetStartToEndVector : Point = POINT1;
+		var targetStartToEndVector = POINT1;
 		targetStartToEndVector.x = targetLine.end.x - targetLine.start.x;
 		targetStartToEndVector.y = targetLine.end.y - targetLine.start.y;
 		
-		const currentDeterminant : Number = startToEndVector.x * start.y - startToEndVector.y * start.x;
-		const targetDeterminant : Number = targetStartToEndVector.x * targetLine.start.y - targetStartToEndVector.y * targetLine.start.x;
-		const crossDeterminant : Number = startToEndVector.x * targetStartToEndVector.y - startToEndVector.y * targetStartToEndVector.x;
-		const crossDeterminant2 : Number = start.x * targetStartToEndVector.y - start.y * targetStartToEndVector.x;
+		var currentDeterminant = startToEndVector.x * start.y - startToEndVector.y * start.x;
+		var targetDeterminant = targetStartToEndVector.x * targetLine.start.y - targetStartToEndVector.y * targetLine.start.x;
+		var crossDeterminant = startToEndVector.x * targetStartToEndVector.y - startToEndVector.y * targetStartToEndVector.x;
+		var crossDeterminant2 = start.x * targetStartToEndVector.y - start.y * targetStartToEndVector.x;
 		
-		if(Math.abs(crossDeterminant) < PRECISION) 
-		{
-			if(Math.abs(crossDeterminant2 + targetDeterminant) < PRECISION) 
-			{
+		if(Math.abs(crossDeterminant) < PRECISION) {
+			if(Math.abs(crossDeterminant2 + targetDeterminant) < PRECISION) {
 				intersection.isCoincidence = true;
 									
-				var coincidenceStartTime : Number;
-				var coincidenceEndTime : Number;
+				var coincidenceStartTime:Float;
+				var coincidenceEndTime:Float;
 				
-				var currentEndTime : Number;
-				var currentStartTime : Number;
+				var currentEndTime:Float;
+				var currentStartTime:Float;
 				
-				const linesStartTime : Number = 0;
-				const linesEndTime : Number = 1;					
+				var linesStartTime:Float = 0;
+				var linesEndTime:Float = 1;					
 				
-				if (Math.abs(startToEndVector.x) > PRECISION) 
-				{
+				if (Math.abs(startToEndVector.x) > PRECISION) {
 					currentStartTime = - (start.x - targetLine.start.x) / startToEndVector.x;
 					currentEndTime = - (start.x - targetLine.end.x) / startToEndVector.x;
-				} 
-				else 
-				{ 
-					if (Math.abs(startToEndVector.y) > PRECISION) 
-					{
+				} else { 
+					if (Math.abs(startToEndVector.y) > PRECISION) {
 						currentStartTime = (targetLine.start.y - start.y) / startToEndVector.y;
 						currentEndTime = (targetLine.end.y - start.y) / startToEndVector.y;
-					} 
-					else 
-					{
+					} else {
 						currentStartTime = 0;
 						currentEndTime = 0;
 					}
@@ -1419,61 +1392,40 @@ import flash.math.Equations;
 					coincidenceStartTime = currentEndTime;
 					coincidenceEndTime = (linesStartTime - currentStartTime) * (linesStartTime - currentEndTime) <= 0 ? linesStartTime : linesEndTime;
 				}
-				var startPt : Point = new Point(coincidenceStartTime * startToEndVector.x + start.x, coincidenceStartTime * startToEndVector.y + start.y);
-				var endPt : Point = new Point(coincidenceEndTime * startToEndVector.x + start.x, coincidenceEndTime * startToEndVector.y + start.y);
+				var startPt = new Point(coincidenceStartTime * startToEndVector.x + start.x, coincidenceStartTime * startToEndVector.y + start.y);
+				var endPt = new Point(coincidenceEndTime * startToEndVector.x + start.x, coincidenceEndTime * startToEndVector.y + start.y);
 				
 				intersection.coincidenceLine = new Line(startPt, endPt);
 			}
 			
-			return intersection;
-		} 
-		else 
-		{
-			var solve : Point = new Point();			
+		} else {
+			var solve = new Point();			
 			solve.x = (currentDeterminant * targetStartToEndVector.x - targetDeterminant * startToEndVector.x) / crossDeterminant;
 			solve.y = (currentDeterminant * targetStartToEndVector.y - targetDeterminant * startToEndVector.y) / crossDeterminant;
 		
-			var time : Number;
-			if (Math.abs(startToEndVector.x) > PRECISION) 
-			{
+			var time:Float;
+			if (Math.abs(startToEndVector.x) > PRECISION) {
 				time = (solve.x - start.x) / startToEndVector.x;
-			} 
-			else 
-			{
+			} else {
 				if (Math.abs(startToEndVector.y) > PRECISION) 
-				{
 					time = (solve.y - start.y) / startToEndVector.y;
-				} 
-				else 
-				{
-					time = Number.NaN;
-				}
+				else time = Math.NaN;
 			}
 			
-			var targetTime : Number;
+			var targetTime:Float;
 			if (Math.abs(targetStartToEndVector.x) > PRECISION) 
-			{
 				targetTime = (solve.x - targetLine.start.x) / targetStartToEndVector.x;
-			} 
-			else 
-			{
+			else {
 				if (Math.abs(targetStartToEndVector.y) > PRECISION) 
-				{
 					targetTime = (solve.y - targetLine.start.y) / targetStartToEndVector.y;
-				} 
-				else 
-				{
-					targetTime = Number.NaN;
-				}
+				else targetTime = Math.NaN;
 			}
-			if ((! isSegment || (time >= 0 && time <= 1)) && (! targetLine.isSegment || (targetTime >= 0 && targetTime <= 1))) 
-			{								
+			if ((! isSegment || (time >= 0 && time <= 1)) && (! targetLine.isSegment || (targetTime >= 0 && targetTime <= 1))) {								
 				intersection.currentTimes.push(time);
 				intersection.targetTimes.push(targetTime);
 			}
-			
-			return intersection;
 		}
+		return intersection;
 	}
 
 	/**
@@ -1499,9 +1451,9 @@ import flash.math.Equations;
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */		   		
-	public function intersectionBezier(target : Bezier) : Intersection 
+	public function intersectionBezier(target:Bezier):Intersection 
 	{
-		var intersection : Intersection = target.intersectionLine(this);
+		var intersection = target.intersectionLine(this);
 		intersection.switchCurrentAndTarget();
 		return intersection;
 	}
@@ -1516,7 +1468,7 @@ import flash.math.Equations;
 	 * 
 	 * @param fromPoint:Point произвольная точка на плоскости
 	 * 
-	 * @return Number time-итератор ближайшей точки на прямой
+	 * @return Float time-итератор ближайшей точки на прямой
 	 * 
 	 * @example
 	 * <listing version="3.0">
@@ -1530,9 +1482,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var fromPoint:Point = randomPoint();
-	 *	var closest:Number = line.getClosest(fromPoint);
+	 *	var closest:Float = line.getClosest(fromPoint);
 	 * 
 	 *  trace(line);
 	 *  trace(fromPoint);
@@ -1554,7 +1506,7 @@ import flash.math.Equations;
 	 * from minus infinity to plus infinity.
 	 * 
 	 * @param fromPoint:Point arbitrary point on the plane
-	 * @return Number time-iterator of the nearest point on the line
+	 * @return Float time-iterator of the nearest point on the line
 	 * 
 	 * @example
 	 * <listing version="3.0">
@@ -1568,9 +1520,9 @@ import flash.math.Equations;
 	 *		return new Line(randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const line:Line = randomLine();
+	 *	var line:Line = randomLine();
 	 *	var fromPoint:Point = randomPoint();
-	 *	var closest:Number = line.getClosest(fromPoint);
+	 *	var closest:Float = line.getClosest(fromPoint);
 	 * 
 	 *  trace(line);
 	 *  trace(fromPoint);
@@ -1585,74 +1537,51 @@ import flash.math.Equations;
 	 * 
 	 **/
 
-	public function getClosest(fromPoint : Point) : Number 
+	public function getClosest(fromPoint:Point):Float 
 	{
-		const startToEndVector : Point = POINT0;
+		var startToEndVector = POINT0;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
 		
-		const startToEndLength : Number = startToEndVector.length;
+		var startToEndLength = startToEndVector.length;
 			
-		if(startToEndLength < PRECISION) 
-		{
-			return 0;
-		}
+		if(startToEndLength < PRECISION) return 0;
 		
-		const selfProjection : Number = - startToEndVector.y * start.x + startToEndVector.x * start.y;
-		const projection : Number = (startToEndVector.y * fromPoint.x + startToEndVector.x * fromPoint.y + selfProjection) / (startToEndLength * startToEndLength);
-		const point : Point = new Point(fromPoint.x - startToEndVector.y * projection, fromPoint.y - startToEndVector.x * projection);
-		const time : Number = startToEndVector.x ? (start.x - point.x) / startToEndVector.x : (point.y - start.y) / startToEndVector.y;
+		var selfProjection = - startToEndVector.y * start.x + startToEndVector.x * start.y;
+		var projection = (startToEndVector.y * fromPoint.x + startToEndVector.x * fromPoint.y + selfProjection) / (startToEndLength * startToEndLength);
+		var point = new Point(fromPoint.x - startToEndVector.y * projection, fromPoint.y - startToEndVector.x * projection);
+		var time = startToEndVector.x != 0 ? (start.x - point.x) / startToEndVector.x : (point.y - start.y) / startToEndVector.y;
 				
-		if (! isSegment) 
-		{
-			return time;
-		}
-		if(time < 0) 
-		{
-			return 0;
-		}
-		if (time > 1) 
-		{
-			return 1;
-		}
+		if (!isSegment) return time;
+		if(time < 0) return 0;
+		if (time > 1) return 1;
 		return time;
 	}
 
 	
 	
-	public function getExistedPointIterators(point : Point) : Array
+	public function getExistedPointIterators(point:Point):Array<Float>
 	{
-		const startToEndVector : Point = POINT0;
+		var startToEndVector = POINT0;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
 			
-		var solution : Number = Number.NaN;
+		var solution = Math.NaN;
 		
 		if (Math.abs(startToEndVector.x) > PRECISION)
-		{
 			solution = (point.x - start.x) / startToEndVector.x;
-		}
-		else
-		{
-			if (Math.abs(startToEndVector.y) > PRECISION)
-			{
-				solution = (point.y - start.y) / startToEndVector.y;
-			}														
-		}
+		else if (Math.abs(startToEndVector.y) > PRECISION)
+			solution = (point.y - start.y) / startToEndVector.y;
 					
-		var iteratorsArray : Array = new Array();		
+		var iteratorsArray = [];		
 		
-		if (! isNaN(solution)) 
-		{			
+		if (! Math.isNaN(solution)) 
 			if ((! isSegment) || ((solution >= 0) && (solution <= 1)))
 			{
-				var foundPoint : Point = getPoint(solution);
+				var foundPoint = getPoint(solution);
 				if (Point.distance(foundPoint, point) < PRECISION) 
-				{
 					iteratorsArray.push(solution);				
-				}
 			}
-		}
 		
 		return iteratorsArray;
 	}
@@ -1677,7 +1606,7 @@ import flash.math.Equations;
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function toString() : String 
+	public function toString():String 
 	{
 		return 	"(start:" + start + ", end:" + end + ")";
 	}

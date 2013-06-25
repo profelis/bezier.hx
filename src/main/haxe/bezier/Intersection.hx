@@ -274,8 +274,8 @@ class Intersection {
 			
 		for (i in 0...targetTimes.length) 
 		{
-			var point : Point = originFigure.getPoint(targetTimes[i]);
-			var iterators:Array = finalFigure.getExistedPointIterators(point);
+			var point = originFigure.getPoint(targetTimes[i]);
+			var iterators = finalFigure.getExistedPointIterators(point);
 				
 			for (j in 0...iterators.length)
 			{

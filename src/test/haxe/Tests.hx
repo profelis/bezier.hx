@@ -14,6 +14,7 @@ class Tests
 		r.add(new EquationsTest());
 		r.add(new PointTest());
 		r.add(new RectTest());
+		r.add(new LineTest());
 		r.run();
 	}
 	
