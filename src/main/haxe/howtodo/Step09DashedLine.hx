@@ -2,7 +2,7 @@ package howtodo;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.geom.Bezier;
+import bezier.Bezier;
 
 class Step09DashedLine extends BezierUsage {
 
@@ -39,7 +39,7 @@ class Step09DashedLine extends BezierUsage {
 		if(starts[0] > ends[0])  {
 			starts.unshift(0);
 		}
-		var i : UInt = 0;
+		var i = 0;
 		while(i < starts.length) {
 			var startSegmentTime : Float = starts[i];
 			var endSegmentTime : Float = ends[i];

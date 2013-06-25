@@ -2,10 +2,10 @@ package howtodo;
 
 import flash.events.Event;
 import flash.events.KeyboardEvent;
-import flash.geom.Bezier;
-import flash.geom.Intersection;
-import flash.geom.Line;
-import flash.geom.Point;
+import bezier.Bezier;
+import bezier.Intersection;
+import bezier.Line;
+import deep.math.Point;
 import flash.ui.Keyboard;
 import howtodo.view.DragPoint;
 
@@ -77,16 +77,23 @@ class Step11Intersections extends BezierUsage {
 		//setTestPosition(200,300,400,500,500,600,600,100,400,300,200,500);
 		// setTestPosition(400,500,500,200,500,600,500,600,500,100,400,100);
 		setTestPosition(450, 200, 300, 350, 100, 550, 450, 350, 200, 100, 450, 350, 100, 100, 50, 150);
-		/*
-		setTestPosition(100,400, 800,500, 100,600,	
-		200,700, 300,100, 400,700,	
-		100,300, 500,750);*/;
-		/*setTestPosition(200,200, 300,300, 600,600, 
-		200,700, 300,750, 200,800,
-		100,700, 700,100);*/;
-		/*setTestPosition(300,200, 300,300, 300,800, 
-		100,500, 400,500, 250,500,
-		600,600, 700,700);	*/;
+		/*
+
+		setTestPosition(100,400, 800,500, 100,600,	
+
+		200,700, 300,100, 400,700,	
+
+		100,300, 500,750);*/
+		/*setTestPosition(200,200, 300,300, 600,600, 
+
+		200,700, 300,750, 200,800,
+
+		100,700, 700,100);*/
+		/*setTestPosition(300,200, 300,300, 300,800, 
+
+		100,500, 400,500, 250,500,
+
+		600,600, 700,700);	*/
 		onPointMoved();
 	}
 
@@ -119,7 +126,7 @@ class Step11Intersections extends BezierUsage {
 		return "" + [start.x, start.y, control.x, control.y, end.x, end.y, startGray.x, startGray.y, controlGray.x, controlGray.y, endGray.x, endGray.y];
 	}
 
-	override function onPointMoved(event : Event = undefined) : Void {
+	override function onPointMoved(?event : Event) : Void {
 		graphics.clear();
 		graphics.lineStyle(0, GREEN, 1);
 		drawLine(lineGreen);
@@ -136,8 +143,8 @@ class Step11Intersections extends BezierUsage {
 	function showBezierBezierIntersection(curve1 : Bezier, curve2 : Bezier) : Void {
 		var time : Float;
 		var isect : Intersection = curve1.intersectionBezier(curve2);
-		if(isect)  {
-			var i : UInt = 0;
+		if(isect != null)  {
+			var i = 0;
 			while(i < isect.currentTimes.length) {
 				time = isect.currentTimes[i];
 				showIntersection(curve1.getPoint(time), false, time);
@@ -150,8 +157,8 @@ class Step11Intersections extends BezierUsage {
 
 	function showLineBezierIntersection(curve : Bezier, line : Line) : Void {
 		var isect : Intersection = curve.intersectionLine(line);
-		if(isect)  {
-			if(isect.currentTimes.length)  {
+		if(isect != null)  {
+			if(isect.currentTimes.length > 0)  {
 				var time : Float = isect.currentTimes[0];
 				showIntersection(curve.getPoint(time), false, time);
 				time = isect.targetTimes[0];
@@ -168,8 +175,8 @@ class Step11Intersections extends BezierUsage {
 
 	function showLineLineIntersection(line1 : Line, line2 : Line) : Void {
 		var isect : Intersection = line1.intersectionLine(line2);
-		if(isect)  {
-			if(isect.currentTimes.length)  {
+		if(isect != null)  {
+			if(isect.currentTimes.length > 0)  {
 				var time : Float = isect.currentTimes[0];
 				showIntersection(line1.getPoint(time), false, time);
 				time = isect.targetTimes[0];
@@ -198,7 +205,7 @@ class Step11Intersections extends BezierUsage {
 	}
 
 	function removeIntersections() : Void {
-		while(intersections.length) {
+		while(intersections.length > 0) {
 			var intersectionPoint : DragPoint = intersections.pop();
 			removeChild(intersectionPoint);
 		}

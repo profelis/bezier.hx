@@ -2,3 +2,4 @@
 -swf target/bezier.swf
 -swf-version 10
 -main Test
+-swf-header 800:700:60:FFFFFF

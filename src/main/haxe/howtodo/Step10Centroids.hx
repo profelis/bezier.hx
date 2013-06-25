@@ -1,11 +1,13 @@
-/**
- * @author ivan.dembicki@gmail.com
+/**
+
+ * @author ivan.dembicki@gmail.com
+
  */
 package howtodo;
 
-import flash.geom.Line;
+import bezier.Line;
 import flash.events.Event;
-import flash.geom.Point;
+import deep.math.Point;
 import howtodo.view.DragPoint;
 
 class Step10Centroids extends BezierUsage {
@@ -48,7 +50,7 @@ class Step10Centroids extends BezierUsage {
 		drawLine(bezierAxis);
 	}
 
-	override function onPointMoved(event : Event = undefined) : Void {
+	override function onPointMoved(?event : Event) : Void {
 		midPoint.position = Point.interpolate(bezier.start, bezier.end, 1 / 2);
 		internalCentroid.position = bezier.internalCentroid;
 		externalCentroid.position = bezier.externalCentroid;

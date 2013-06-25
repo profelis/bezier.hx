@@ -33,15 +33,15 @@ class Test extends Sprite {
 						Step04EmulationCubic, 
 						Step05SmoothCurve, 
 						Step06PointOnBezier, 
-						//Step07PointOnCurve, 
-						//Step08Bounce, 
-						//Step09DashedLine, 
-						//Step10Centroids, 
-						//Step11Intersections, 
-						//Step12GeometryProperties, 
-						//Step13MovingRotating, 
-						//Step14ClosestPointTimeTest, 
-						//Step15IntersectionsTimeTest
+						Step07PointOnCurve, 
+						Step08Bounce, 
+						Step09DashedLine, 
+						Step10Centroids, 
+						Step11Intersections, 
+						Step12GeometryProperties, 
+						Step13MovingRotating, 
+						Step14ClosestPointTimeTest, 
+						Step15IntersectionsTimeTest
 						];
 		switchButtonsTarget = new Sprite();
 		SPACE = 5;

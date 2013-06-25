@@ -2,8 +2,8 @@ package howtodo;
 
 import howtodo.view.DragPoint;
 import flash.events.MouseEvent;
-import flash.geom.Bezier;
-import flash.geom.Point;
+import bezier.Bezier;
+import deep.math.Point;
 
 class Step13MovingRotating extends BezierUsage {
 

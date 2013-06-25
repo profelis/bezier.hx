@@ -1,13 +1,13 @@
 package howtodo;
 
+import flash.Lib;
 import howtodo.view.DragPoint;
 import flash.events.MouseEvent;
-import flash.geom.Bezier;
-import flash.geom.Line;
-import flash.geom.Point;
+import bezier.Bezier;
+import bezier.Line;
+import deep.math.Point;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
-import flash.utils.GetTimer;
 
 class Step14ClosestPointTimeTest extends BezierUsage {
 
@@ -39,8 +39,8 @@ class Step14ClosestPointTimeTest extends BezierUsage {
 	}
 
 	function updateOutText(time : Float) : Void {
-		fpsTextField.text = "1000 iterations duration - " + time + "milliseconds
-" + (time / 1000) + " milliseconds spent on single method call";
+		fpsTextField.text = "1000 iterations duration - " + time + " milliseconds\n" 
+		+ (time / 1000) + " milliseconds spent on single method call";
 	}
 
 	function addTextField(textField : TextField, x : Float, y : Float) : Void {
@@ -55,21 +55,21 @@ class Step14ClosestPointTimeTest extends BezierUsage {
 		addChild(textField);
 	}
 
-	function onMouseMoveHandler(event : MouseEvent = undefined) : Void {
+	function onMouseMoveHandler(?event : MouseEvent) : Void {
 		mouse.x = event.stageX;
 		mouse.y = event.stageY;
 		redraw();
 	}
 
 	function redraw() : Void {
-		var closestTime : Float;
-		var calculationTime : Float = getTimer();
+		var closestTime : Float = 0;
+		var calculationTime : Float = Lib.getTimer();
 		var i : Int = 0;
 		while(i < 1000) {
 			closestTime = bezier.getClosest(mouse);
 			i++;
 		}
-		calculationTime = getTimer() - calculationTime;
+		calculationTime = Lib.getTimer() - calculationTime;
 		updateOutText(calculationTime);
 		closestPoint.position = bezier.getPoint(closestTime);
 		closestPoint.pointName = "P(" + round(closestTime, 3) + ")";

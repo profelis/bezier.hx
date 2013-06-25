@@ -1,42 +1,72 @@
-/**
- * @example
- * Синим цветом обозначена кривая Безье, ограниченная точками start, end, а также линия до ближайшей точки на ней. Свойство <code>isSegment=true;</code> <BR/>
- * Красным цветом обозначена неограниченная кривая, а также линия до ближайшей точки на ней. Свойство <code>isSegment=false;</code>
- * <P><a name="closest_point_demo"></a>
- * <table width="100%" border=1><td>
- * <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
- *			id="Step1Building" width="100%" height="500"
- *			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
- *			<param name="movie" value="../images/Step02ClosestPoint.swf" />
- *			<param name="quality" value="high" />
- *			<param name="bgcolor" value="#FFFFFF" />
- *			<param name="allowScriptAccess" value="sameDomain" />
- *			<embed src="../images/Step02ClosestPoint.swf" quality="high" bgcolor="#FFFFFF"
- *				width="100%" height="400" name="Step1Building"
- * 				align="middle"
- *				play="true"
- *				loop="false"
- *				quality="high"
- *				allowScriptAccess="sameDomain"
- *				type="application/x-shockwave-flash"
- *				pluginspage="http://www.adobe.com/go/getflashplayer">
- *			</embed>
- *	</object>
- * 	</td></table>
- * </P>
- * <P ALIGN="center"><B>Интерактивная демонстрация</B><BR>
- * <I>Перемещайте мышью контрольные точки кривой.</I></P>
- * <BR/>
- * 
+/**
+
+ * @example
+
+ * Синим цветом обозначена кривая Безье, ограниченная точками start, end, а также линия до ближайшей точки на ней. Свойство <code>isSegment=true;</code> <BR/>
+
+ * Красным цветом обозначена неограниченная кривая, а также линия до ближайшей точки на ней. Свойство <code>isSegment=false;</code>
+
+ * <P><a name="closest_point_demo"></a>
+
+ * <table width="100%" border=1><td>
+
+ * <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+
+ *			id="Step1Building" width="100%" height="500"
+
+ *			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+
+ *			<param name="movie" value="../images/Step02ClosestPoint.swf" />
+
+ *			<param name="quality" value="high" />
+
+ *			<param name="bgcolor" value="#FFFFFF" />
+
+ *			<param name="allowScriptAccess" value="sameDomain" />
+
+ *			<embed src="../images/Step02ClosestPoint.swf" quality="high" bgcolor="#FFFFFF"
+
+ *				width="100%" height="400" name="Step1Building"
+
+ * 				align="middle"
+
+ *				play="true"
+
+ *				loop="false"
+
+ *				quality="high"
+
+ *				allowScriptAccess="sameDomain"
+
+ *				type="application/x-shockwave-flash"
+
+ *				pluginspage="http://www.adobe.com/go/getflashplayer">
+
+ *			</embed>
+
+ *	</object>
+
+ * 	</td></table>
+
+ * </P>
+
+ * <P ALIGN="center"><B>Интерактивная демонстрация</B><BR>
+
+ * <I>Перемещайте мышью контрольные точки кривой.</I></P>
+
+ * <BR/>
+
+ * 
+
  **/
 package howtodo;
 
 import flash.text.TextFieldAutoSize;
 import flash.text.TextField;
 import flash.events.MouseEvent;
-import flash.geom.Bezier;
-import flash.geom.Line;
-import flash.geom.Point;
+import bezier.Bezier;
+import bezier.Line;
+import deep.math.Point;
 import howtodo.view.DragPoint;
 
 class Step12GeometryProperties extends BezierUsage {
@@ -94,7 +124,7 @@ class Step12GeometryProperties extends BezierUsage {
 		addChild(textField);
 	}
 
-	function onMouseMoveHandler(event : MouseEvent = undefined) : Void {
+	function onMouseMoveHandler(?event : MouseEvent) : Void {
 		mouse.x = event.stageX;
 		mouse.y = event.stageY;
 		redraw();
@@ -115,10 +145,10 @@ class Step12GeometryProperties extends BezierUsage {
 		var curveText : String = "bezier is simple convex curve";
 		var curveAsPoint : Point = bezier.asPoint();
 		var curveAsLine : Line = bezier.asLine();
-		if(curveAsPoint)  {
+		if(curveAsPoint != null)  {
 			curveText = "bezier is point";
 		}
-		if(curveAsLine)  {
+		if(curveAsLine != null)  {
 			if(curveAsLine.isRay)  {
 				curveText = "bezier is ray";
 			}

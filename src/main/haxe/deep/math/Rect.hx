@@ -73,7 +73,7 @@ class Rect {
 	}
 	
 	inline public function containsPoint(p:Point):Bool {
-		return p.x >= x && p.x <= x + width && p.y <= y && p.y >= y + height;
+		return p.x >= x && p.x <= x + width && p.y >= y && p.y <= y + height;
 	}
 	
 	public function toString() {
