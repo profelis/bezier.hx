@@ -29,7 +29,7 @@ class Point {
 	}
 	
 	inline static function len(x:Float, y:Float):Float {
-		if (x == 0 || y == 0) return x + y;
+		if (x == 0 || y == 0) return Math.abs(x + y);
 		else {
 			var t = y / x;
 			return Math.abs(x) * Math.sqrt(1 + t * t);

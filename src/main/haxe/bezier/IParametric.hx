@@ -3,7 +3,7 @@ package bezier;
 import deep.math.Point;
 import deep.math.Rect;
 
-interface IParametric {
+interface IParametric<T> {
 
 	/* *
 	 * Режим ограничения линии.
@@ -125,7 +125,7 @@ interface IParametric {
 	
 	function getExistedPointIterators(point:Point):Array<Float>;
 	
-	//		function getSegment (fromTime:Float=0, toTime:Float=1):IParametric;
+	function getSegment(fromTime:Float = 0, toTime:Float = 1):T;
 	
 	/**
 	 * Calculates and returns the length of a segment from Point <code>start</code> to the Point, given by parameter <code>time</code>
@@ -155,5 +155,7 @@ interface IParametric {
 	 **/
 	 
 	function toString():String;
+	
+	function clone():T;
 
 }

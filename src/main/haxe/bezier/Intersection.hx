@@ -243,7 +243,7 @@ class Intersection {
 		targetTimes = t;
 	}
 
-	function translateCurrentIterators(originFigure:IParametric, finalFigure:IParametric):Void {			
+	function translateCurrentIterators(originFigure:IParametric<Dynamic>, finalFigure:IParametric<Dynamic>):Void {			
 		var correctedCurrentTimes = [];
 		var correctedTargetTimes = [];
 			
@@ -268,7 +268,7 @@ class Intersection {
 		}		
 	}
 
-	function translateTargetIterators(originFigure:IParametric, finalFigure:IParametric):Void {			
+	function translateTargetIterators(originFigure:IParametric<Dynamic>, finalFigure:IParametric<Dynamic>):Void {			
 		var correctedCurrentTimes = [];
 		var correctedTargetTimes = [];
 			

@@ -54,11 +54,11 @@ import deep.math.Rect;
  * @see Intersection
  */
 
-@:final class Line implements IParametric
+@:final class Line implements IParametric<Line>
 {
 
-	static var POINT0:Point = new Point();
-	static var POINT1:Point = new Point();
+	static var POINT0 = new Point();
+	static var POINT1 = new Point();
 
 	static inline var PRECISION = Equations.PRECISION;
 
@@ -639,6 +639,7 @@ import deep.math.Rect;
 
 	public function getPoint(time:Float, point:Point = null):Point 
 	{
+		if (Math.isNaN(time)) return null;
 		point = point != null ? point : new Point();
 		point.x = start.x + (end.x - start.x) * time;
 		point.y = start.y + (end.y - start.y) * time;
@@ -711,6 +712,7 @@ import deep.math.Rect;
 	 */ 
 
 	public function getTimeByDistance(distance:Float):Float {
+		if (Math.isNaN(distance)) return Math.NaN;
 		var lineLength = this.length;
 		
 		return if (lineLength > PRECISION) 
@@ -806,10 +808,10 @@ import deep.math.Rect;
 
 	public function setPoint(time:Float, ?x:Float, ?y:Float):Void 
 	{
-		if (x == null && y == null) return;
+		if ((x == null || Math.isNaN(x)) && (y == null || Math.isNaN(y))) return;
 		var point = getPoint(time);
-		if (x != null) point.x = x;
-		if (y != null) point.y = y;
+		if (x != null && !Math.isNaN(x)) point.x = x;
+		if (y != null && !Math.isNaN(y)) point.y = y;
 		end.x = point.x + (point.x - start.x) * ((1 - time) / time);
 		end.y = point.y + (point.y - start.y) * ((1 - time) / time);
 	}
@@ -950,7 +952,7 @@ import deep.math.Rect;
 	 * @lang rus
 	 */
 
-	inline public function getSegment(fromTime:Float = 0, toTime:Float = 1) : Line {
+	inline public function getSegment(fromTime:Float = 0, toTime:Float = 1):Line {
 		return new Line(getPoint(fromTime), getPoint(toTime));
 	}
 
@@ -1352,8 +1354,8 @@ import deep.math.Rect;
 			if(Math.abs(crossDeterminant2 + targetDeterminant) < PRECISION) {
 				intersection.isCoincidence = true;
 									
-				var coincidenceStartTime:Float;
-				var coincidenceEndTime:Float;
+				var coincidenceStartTime:Float = 0;
+				var coincidenceEndTime:Float = 0;
 				
 				var currentEndTime:Float;
 				var currentStartTime:Float;
@@ -1374,21 +1376,16 @@ import deep.math.Rect;
 					}
 				}
 				
-				if ((linesStartTime - currentStartTime) * (linesStartTime - currentEndTime) <= 0 && (linesEndTime - currentStartTime) * (linesEndTime - currentEndTime) <= 0) 
-				{
+				if ((linesStartTime - currentStartTime) * (linesStartTime - currentEndTime) <= 0 && (linesEndTime - currentStartTime) * (linesEndTime - currentEndTime) <= 0) {
 					coincidenceEndTime = linesEndTime;
 					coincidenceStartTime = linesStartTime; 
-				} 
-				else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) <= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) <= 0) 
-				{
+				} else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) <= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) <= 0) {
 					coincidenceEndTime = currentEndTime;
 					coincidenceStartTime = currentStartTime; 
-				} else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) <= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) >= 0) 
-				{
+				} else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) <= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) >= 0) {
 					coincidenceStartTime = currentStartTime;
 					coincidenceEndTime = (linesStartTime - currentStartTime) * (linesStartTime - currentEndTime) <= 0 ? linesStartTime : linesEndTime;
-				} else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) >= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) <= 0) 
-				{
+				} else if ((currentStartTime - linesStartTime) * (currentStartTime - linesEndTime) >= 0 && (currentEndTime - linesStartTime) * (currentEndTime - linesEndTime) <= 0) {
 					coincidenceStartTime = currentEndTime;
 					coincidenceEndTime = (linesStartTime - currentStartTime) * (linesStartTime - currentEndTime) <= 0 ? linesStartTime : linesEndTime;
 				}

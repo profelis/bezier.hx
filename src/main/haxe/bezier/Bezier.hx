@@ -2,6 +2,7 @@ package bezier;
 
 import bezier.math.Equations;
 import deep.math.Point;
+import deep.math.Rect;
 
 /**
  *              I. INTRODUCTION
@@ -51,7 +52,7 @@ import deep.math.Point;
  * 2. Geometric figures (lines), defined in <code>Line</code> and <code>Bezier</code> classes,
  * are controlled in parametric form, every point of the figure is defined by it's time-iterator.
  * In the beginning it can seem inconvenient that computation of the point on curve returns
- * a time-iterator that is <code>Number</code> instead of <point>Point</point> class instance.
+ * a time-iterator that is <code>Float</code> instead of <point>Point</point> class instance.
  * However, this realization helps us to avoid redundant convertations in future calculations.
  * To convert point on figure to the <class>Point</class>, use the <code>getPoint()</code> method.
  * To find time-iterator for the two-dimensional point, use the <code>getClosest()</code> method.
@@ -119,7 +120,7 @@ import deep.math.Point;
  * параметрической форме, и каждая точка фигуры характеризуется time-итератором.
  * Возможно, что поначалу покажется неудобным, что при вычислении точки на кривой
  * возвращается не привычный всем объект класса Point, а time-итератор,
- * являющийся Number. Однако такая реализация позволяет избежать избыточных 
+ * являющийся Float. Однако такая реализация позволяет избежать избыточных 
  * конвертаций при последующих расчетах.
  * При необходимости перевести точку фигуры в объект Point, используйте метод getPoint().
  * При необходимости найти time-итератор двумерной точки, используйте метод getClosest().
@@ -312,115 +313,14 @@ import deep.math.Point;
  * @translator Maxim Kachurovskiy http://www.riapriority.com
  **/
 
-class Bezier implements IParametric {
+@:final class Bezier implements IParametric<Bezier> {
 	
 	static inline var PRECISION = Equations.PRECISION;
-	private static const POINT0 : Point = new Point();
-	private static const POINT1 : Point = new Point();
-	private static const POINT2 : Point = new Point();
-	private static const POINT3 : Point = new Point();
-	var startPoint : Point;
-	var controlPoint : Point;
-	var endPoint : Point;
-	var __isSegment : Boolean = true;
-
-	// **************************************************
-	// CONSTRUCTOR
-	// **************************************************
-	/* *
-	 * 
-	 * Создает новый объект Bezier. 
-	 * Если параметры не переданы, то все опорные точки создаются в координатах 0,0  
-	 * 
-	 * @param start:Point начальная точка кривой Безье 
-	 * 
-	 * @param control:Point контрольная точка кривой Безье
-	 *  
-	 * @param end:Point конечная точка кривой Безье
-	 * 
-	 * @param isSegment:Boolean флаг ограниченности кривой Безье.
-	 * 
-	 * @example В этом примере создается кривая Безье в случайных координатах.  
-	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
-	 *	
-	 * function randomPoint():Point {
-	 * 	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
-	 * }
-	 * function randomBezier():Bezier {
-	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
-	 * }
-	 *	
-	 * const bezier:Bezier = randomBezier();
-	 * trace("random bezier: "+bezier);
-	 * </listing>
-	 * 
-	 * @langversion 3.0
-	 * @playerversion Flash 9.0
-	 * 
-	 * @lang rus
-	 **/
-	/** 
-	 * Create new Bezier object.
-	 * If parameters are not passed, all control points are created in coordinates 0,0
-	 *
-	 * @param start:Point initial point of Bezier curve
-	 *
-	 * @param control:Point control point of Bezier curve
-	 *
-	 * @param end:Point end point of Bezier curve
-	 *
-	 * @param isSegment:Boolean limitation flag
-	 *
-	 * @example In this example created Bezier curve with random coordinates.
-	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
-	 *
-	 * function randomPoint():Point {
-	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
-	 * }
-	 * function randomBezier():Bezier {
-	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
-	 * }
-	 *
-	 * const bezier:Bezier = randomBezier();
-	 * trace("random bezier: "+bezier);
-	 * </listing>
-	 *
-	 * @langversion 3.0
-	 * @playerversion Flash 9.0
-	 * 
-	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
-	 **/
-	public function Bezier(start : Point = undefined, control : Point = undefined, end : Point = undefined, isSegment : Boolean = true) {
-		initInstance(start, control, end, isSegment);
-	}
-
-	/* *
-	 * Приватный инициализатор для объекта, который можно переопределить. Параметры совпадают с параметрами конструктора.
-	 *
-	 * @langversion 3.0
-	 * @playerversion Flash 9.0
-	 * 
-	 * @lang rus
-	 **/
-	/**
-	 * Private initializer for an object that can be redefined. Parameters coincide with the parameters of the constructor.
-	 * 
-	 * @langversion 3.0
-	 * @playerversion Flash 9.0
-	 **/
-	protected function initInstance(start : Point = undefined, control : Point = undefined, end : Point = undefined, isSegment : Boolean = true) : void {
-		startPoint = (start as Point) || new Point();
-		controlPoint = (control as Point) || new Point();
-		endPoint = (end as Point) || new Point();
-		__isSegment = Boolean(isSegment);
-	}
-
-	// Поскольку публичные переменные нельзя нельзя переопределять в дочерних классах,
-	// start, control, end и isSegment реализованы как get-set методы, а не как публичные переменные.
+	static var POINT0 = new Point();
+	static var POINT1 = new Point();
+	static var POINT2 = new Point();
+	static var POINT3 = new Point();
+	
 	/* *
 	 * Начальная опорная точка кривой Безье. Итератор <code>time</code> равен нулю.
 	 * 
@@ -434,8 +334,6 @@ class Bezier implements IParametric {
 	 * @lang rus
 	 * 
 	 **/
-	// As public variables cannot be redefined in affiliated classes, start, control, end and isSegment
-	// are realized as get-set methods, instead of as public variables.
 	/**
 	 * Initial anchor point of Bezier curve. Iterator <code>time</code> is equal to zero.
 	 *
@@ -446,14 +344,8 @@ class Bezier implements IParametric {
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 * 
 	 **/
-	public function get start() : Point {
-		return startPoint;
-	}
-
-	public function set start(value : Point) : void {
-		startPoint = value;
-	}
-
+	public var start:Point;
+	
 	/* *
 	 * Контрольная точка кривой Безье. 
 	 * 
@@ -475,14 +367,8 @@ class Bezier implements IParametric {
 	 * @lang eng
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 **/
-	public function get control() : Point {
-		return controlPoint;
-	}
-
-	public function set control(value : Point) : void {
-		controlPoint = value;
-	}
-
+	public var control:Point;
+	
 	/* *
 	 * Конечная опорная точка кривой Безье. Итератор <code>time</code> равен единице.
 	 *  
@@ -502,14 +388,8 @@ class Bezier implements IParametric {
 	 * @lang eng
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 **/
-	public function get end() : Point {
-		return endPoint;
-	}
-
-	public function set end(value : Point) : void {
-		endPoint = value;
-	}
-
+	public var end:Point;
+	
 	/* *
 	 * Определяет является ли кривая Безье бесконечной в обе стороны
 	 * или ограничена в пределах значения итераторов от 0 до 1.<BR/>
@@ -566,12 +446,84 @@ class Bezier implements IParametric {
 	 * @lang eng
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 **/
-	public function get isSegment() : Boolean {
-		return __isSegment;
-	}
+	public var isSegment:Bool = true;
 
-	public function set isSegment(value : Boolean) : void {
-		__isSegment = value;
+	// **************************************************
+	// CONSTRUCTOR
+	// **************************************************
+	/* *
+	 * 
+	 * Создает новый объект Bezier. 
+	 * Если параметры не переданы, то все опорные точки создаются в координатах 0,0  
+	 * 
+	 * @param start:Point начальная точка кривой Безье 
+	 * 
+	 * @param control:Point контрольная точка кривой Безье
+	 *  
+	 * @param end:Point конечная точка кривой Безье
+	 * 
+	 * @param isSegment:Boolean флаг ограниченности кривой Безье.
+	 * 
+	 * @example В этом примере создается кривая Безье в случайных координатах.  
+	 * <listing version="3.0">
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
+	 *	
+	 * function randomPoint():Point {
+	 * 	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
+	 * }
+	 * function randomBezier():Bezier {
+	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
+	 * }
+	 *	
+	 * var bezier:Bezier = randomBezier();
+	 * trace("random bezier: "+bezier);
+	 * </listing>
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 9.0
+	 * 
+	 * @lang rus
+	 **/
+	/** 
+	 * Create new Bezier object.
+	 * If parameters are not passed, all control points are created in coordinates 0,0
+	 *
+	 * @param start:Point initial point of Bezier curve
+	 *
+	 * @param control:Point control point of Bezier curve
+	 *
+	 * @param end:Point end point of Bezier curve
+	 *
+	 * @param isSegment:Boolean limitation flag
+	 *
+	 * @example In this example created Bezier curve with random coordinates.
+	 * <listing version="3.0">
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
+	 *
+	 * function randomPoint():Point {
+	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
+	 * }
+	 * function randomBezier():Bezier {
+	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
+	 * }
+	 *
+	 * var bezier:Bezier = randomBezier();
+	 * trace("random bezier: "+bezier);
+	 * </listing>
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 9.0
+	 * 
+	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
+	 **/
+	public function new(?start:Point, ?control:Point, ?end:Point, isSegment = true) {
+		
+		this.start = start != null ? start : new Point();
+		this.control = control != null ? control : new Point();
+		this.end = end != null ? end : new Point();
+		this.isSegment = isSegment;
 	}
 
 	/* *
@@ -582,8 +534,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается случайная кривая Безье и ее копия. 
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *	
 	 * function randomPoint():Point {
 	 * 	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -592,8 +544,8 @@ class Bezier implements IParametric {
 	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const bezier:Bezier = randomBezier();
-	 * const clone:Bezier = bezier.clone();
+	 * var bezier:Bezier = randomBezier();
+	 * var clone:Bezier = bezier.clone();
 	 * trace("bezier: "+bezier);
 	 * trace("clone: "+clone);
 	 * trace(bezier == clone); // false
@@ -613,8 +565,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example This example creates a random Bezier curve and its copy:
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -623,8 +575,8 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const bezier:Bezier = randomBezier();
-	 * const clone:Bezier = bezier.clone();
+	 * var bezier:Bezier = randomBezier();
+	 * var clone:Bezier = bezier.clone();
 	 * trace("bezier: "+bezier);
 	 * trace("clone: "+clone);
 	 * trace(bezier == clone);
@@ -634,8 +586,8 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 **/
-	public function clone() : Bezier {
-		return new Bezier(startPoint.clone(), controlPoint.clone(), endPoint.clone(), __isSegment);
+	inline public function clone():Bezier {
+		return new Bezier(start.clone(), control.clone(), end.clone(), isSegment);
 	}
 
 	// **************************************************
@@ -659,11 +611,11 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается кривая Безье, и проверяется ее вырожденность в прямую линию.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
+	 * import bezier.Bezier;
 	 * import flash.geom.Line;
-	 * import flash.geom.Point;
+	 * import deep.math.Point;
 	 *		
-	 * const bezier:Bezier = Bezier( new Point(100, 100), new Point(200, 200), new Point(300, 301));
+	 * var bezier:Bezier = Bezier( new Point(100, 100), new Point(200, 200), new Point(300, 301));
 	 * var line:Line = bezier.curveAsLine();
 	 * trace("Is it line? "+ (line != null)); // Is it line? false
 	 * bezier.end.y = 300;
@@ -696,11 +648,11 @@ class Bezier implements IParametric {
 	 * 
 	 * @example In this example a Bezier curve is created, and its degeneration into a straight line is checked.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
+	 * import bezier.Bezier;
 	 * import flash.geom.Line;
-	 * import flash.geom.Point;
+	 * import deep.math.Point;
 	 *		
-	 * const bezier:Bezier = Bezier( new Point(100, 100), new Point(200, 200), new Point(300, 301));
+	 * var bezier:Bezier = Bezier( new Point(100, 100), new Point(200, 200), new Point(300, 301));
 	 * var line:Line = bezier.curveAsLine();
 	 * trace("Is it line? "+ (line != null)); // Is it line? false
 	 * bezier.end.y = 300;
@@ -714,34 +666,32 @@ class Bezier implements IParametric {
 	 */
 	// Логика работы метода - проверка, что существует такое t, при котором control = start+t*(end-start).
 	// The logic of method - check, that there exists a t, where control = start+t*(end-start).
-	public function asLine() : Line {
-		const startToControlVector : Point = POINT0;
+	public function asLine():Line {
+		
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const startToEndVector : Point = POINT1;
+		var startToEndVector = POINT1;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
 
 		if (startToEndVector.length > PRECISION) {
-			var timeOfControl : Number = startToControlVector.length / startToEndVector.length;
-			var isLine : Boolean = (Math.abs(startToControlVector.x - timeOfControl * startToEndVector.x) < PRECISION) && (Math.abs(startToControlVector.y - timeOfControl * startToEndVector.y) < PRECISION);
+			var timeOfControl = startToControlVector.length / startToEndVector.length;
+			var isLine = (Math.abs(startToControlVector.x - timeOfControl * startToEndVector.x) < PRECISION) && (Math.abs(startToControlVector.y - timeOfControl * startToEndVector.y) < PRECISION);
 
-			if (isLine) {
-				if (timeOfControl < 0) {
-					return new Line(this.getPoint(this.parabolaVertex), end.clone(), this.isSegment, true);
-				} else {
-					if (timeOfControl > 1) {
-						return new Line(this.getPoint(this.parabolaVertex), start.clone(), this.isSegment, true);
-					} else {
-						return new Line(start.clone(), end.clone(), this.isSegment, ((timeOfControl - 0.5) > PRECISION));
-					}
+			if (isLine)
+				return if (timeOfControl < 0)
+					new Line(this.getPoint(this.parabolaVertex), end.clone(), this.isSegment, true);
+				else {
+					if (timeOfControl > 1)
+						new Line(this.getPoint(this.parabolaVertex), start.clone(), this.isSegment, true);
+					else
+						new Line(start.clone(), end.clone(), this.isSegment, ((timeOfControl - 0.5) > PRECISION));
 				}
-			}
 		} else {
-			if (startToControlVector.length > PRECISION) {
+			if (startToControlVector.length > PRECISION)
 				return new Line(this.getPoint(this.parabolaVertex), start.clone(), this.isSegment, true);
-			}
 		}
 
 		return null;
@@ -756,10 +706,10 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается кривая Безье, и проверяется ее вырожденность в точку.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
-	 * const bezier:Bezier = Bezier( new Point(100, 100), new Point(100, 100), new Point(100, 101));
+	 * var bezier:Bezier = Bezier( new Point(100, 100), new Point(100, 100), new Point(100, 101));
 	 * var point:Point = bezier.curveAsPoint();
 	 * trace("Is it point? "+ (point != null)); // Is it point? false
 	 * bezier.end.y = 100;
@@ -783,10 +733,10 @@ class Bezier implements IParametric {
 	 * @example In this example a Bezier curve is created, and its degeneration into a point is checked.
 	 * 
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
-	 * const bezier:Bezier = Bezier( new Point(100, 100), new Point(100, 100), new Point(100, 101));
+	 * var bezier:Bezier = Bezier( new Point(100, 100), new Point(100, 100), new Point(100, 101));
 	 * var point:Point = bezier.curveAsPoint();
 	 * trace("Is it point? "+ (point != null)); // Is it point? false
 	 * bezier.end.y = 100;
@@ -800,32 +750,31 @@ class Bezier implements IParametric {
 	 */
 	// Логика работы метода - проверка, что все три опорные точки кривой совпадают, с учетом допуска.
 	// The logic of method - tolerance check all three anchor points of the curve coincide
-	public function asPoint() : Point {
-		const startToControlVector : Point = POINT0;
+	public function asPoint():Point {
+		
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const startToEndVector : Point = POINT1;
+		var startToEndVector = POINT1;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
 
-		if ((startToEndVector.length < PRECISION) && (startToControlVector.length < PRECISION)) {
-			return start.clone();
-		} else {
-			return null;
-		}
+		return if ((startToEndVector.length < PRECISION) && (startToControlVector.length < PRECISION))
+			start.clone();
+		else null;
 	}
 
 	/* *
 	 * Вычисляет длину кривой Безье от начальной точки до конечной.
 	 * 
-	 * @return Number длина кривой Безье
+	 * @return Float длина кривой Безье
 	 * 
 	 * @example В этом примере создается случайная кривая Безье и выводится ее длина.  
 	 * <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -834,7 +783,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	
 	 *	trace("bezier length: "+bezier.length);
 	 * 
@@ -852,13 +801,13 @@ class Bezier implements IParametric {
 	/**
 	 * Calculates a length of a Bezier curve from the initial point to the end point.
 	 * 
-	 * @return Number a length of a Bezier curve
+	 * @return Float a length of a Bezier curve
 	 * 
 	 * @example In this example a Bezier curve is created, and its length is derived.
 	 * <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -867,7 +816,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const bezier:Bezier = randomBezier();
+	 * var bezier:Bezier = randomBezier();
 	 *
 	 * trace("bezier length: "+bezier.length);
 	 * </listing>
@@ -879,7 +828,10 @@ class Bezier implements IParametric {
 	 * @playerversion Flash 9.0
 	 * 
 	 **/
-	public function get length() : Number {
+	
+	public var length(get, never):Float;
+	 
+	inline public function get_length():Float {
 		return getSegmentLength(1.0);
 	}
 
@@ -887,9 +839,9 @@ class Bezier implements IParametric {
 	 * Вычисляет длину сегмента кривой Безье от стартовой точки до
 	 * точки на кривой, заданной параметром time. 
 	 * 
-	 * @param time:Number параметр time конечной точки сегмента.
+	 * @param time:Float параметр time конечной точки сегмента.
 	 * 
-	 * @return Number длина сегмента кривой Безье
+	 * @return Float длина сегмента кривой Безье
 	 * 
 	 * @private Логика работы метода - один раз был подсчитан интеграл длины кривой, и запрограммировано его вычисление для интервала 0..time
 	 * 
@@ -899,8 +851,8 @@ class Bezier implements IParametric {
 	 * кривой до средней точки - они должны быть равны.
 	 * <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -909,11 +861,11 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	
-	 *	const middleDistance:Number = bezier.length/2;
-	 *	const middleTime:Number = bezier.getTimeByDistance(middleDistance);
-	 *	const segmentLength:Number = bezier.getSegmentLength(middleTime);
+	 *	var middleDistance:Float = bezier.length/2;
+	 *	var middleTime:Float = bezier.getTimeByDistance(middleDistance);
+	 *	var segmentLength:Float = bezier.getSegmentLength(middleTime);
 	 *	
 	 *	trace(middleDistance);
 	 *	trace(segmentLength);
@@ -931,16 +883,16 @@ class Bezier implements IParametric {
 	 * Calculates length of a segment of Bezier curve from a starting point
 	 * up to a point on a curve which passed in parameter time.
 	 *
-	 * @param time:Number parameter time of the end point of a segment.
-	 * @return Number length of arc.
+	 * @param time:Float parameter time of the end point of a segment.
+	 * @return Float length of arc.
 	 *
 	 * @example In this example creates random Bezier curve, calculates time-iterator
 	 * of the middle of a curve, and then traces values of half of length of a curve
 	 * and length of a segment of a curve up to an middle point - they should be equal.
 	 * <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -949,11 +901,11 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const bezier:Bezier = randomBezier();
+	 * var bezier:Bezier = randomBezier();
 	 *
-	 * const middleDistance:Number = bezier.length/2;
-	 * const middleTime:Number = bezier.getTimeByDistance(middleDistance);
-	 * const segmentLength:Number = bezier.getSegmentLength(middleTime);
+	 * var middleDistance:Float = bezier.length/2;
+	 * var middleTime:Float = bezier.getTimeByDistance(middleDistance);
+	 * var segmentLength:Float = bezier.getSegmentLength(middleTime);
 	 *
 	 * trace(middleDistance);
 	 * trace(segmentLength);
@@ -970,42 +922,40 @@ class Bezier implements IParametric {
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 * 
 	 **/
-	public function getSegmentLength(time : Number) : Number {
-		const startToControlVector : Point = POINT0;
+	public function getSegmentLength(time:Float):Float {
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const startToControlLenght : Number = startToControlVector.length;
-		const startToControlLenghtPower2 : Number = startToControlLenght * startToControlLenght;
-		const controlToStartMultiplyMainDiagonal : Number = 2 * (startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y);
-		const diagonalLenght : Number = diagonalVector.length;
-		const diagonalLenghtPower2 : Number = diagonalLenght * diagonalLenght;
+		var startToControlLenght = startToControlVector.length;
+		var startToControlLenghtPower2 = startToControlLenght * startToControlLenght;
+		var controlToStartMultiplyMainDiagonal = 2 * (startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y);
+		var diagonalLenght = diagonalVector.length;
+		var diagonalLenghtPower2 = diagonalLenght * diagonalLenght;
 
-		var integralValueInTime : Number;
-		var integralValueInZero : Number;
+		var integralValueInTime:Float;
+		var integralValueInZero:Float;
 
 		if (diagonalLenght == 0) {
 			integralValueInTime = 2 * diagonalLenght * time;
 			integralValueInZero = 0;
 		} else {
-			const integralFrequentPart1 : Number = Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2);
-			const integralFrequentPart2 : Number = (controlToStartMultiplyMainDiagonal + 2 * diagonalLenghtPower2 * time) / diagonalLenght + 2 * integralFrequentPart1;
-			const integralFrequentPart3 : Number = controlToStartMultiplyMainDiagonal / diagonalLenght + 2 * startToControlLenght;
-			const integralFrequentPart4 : Number = (startToControlLenghtPower2 - 0.25 * controlToStartMultiplyMainDiagonal * controlToStartMultiplyMainDiagonal / diagonalLenghtPower2);
+			var integralFrequentPart1 = Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2);
+			var integralFrequentPart2 = (controlToStartMultiplyMainDiagonal + 2 * diagonalLenghtPower2 * time) / diagonalLenght + 2 * integralFrequentPart1;
+			var integralFrequentPart3 = controlToStartMultiplyMainDiagonal / diagonalLenght + 2 * startToControlLenght;
+			var integralFrequentPart4 = (startToControlLenghtPower2 - 0.25 * controlToStartMultiplyMainDiagonal * controlToStartMultiplyMainDiagonal / diagonalLenghtPower2);
 
 			integralValueInTime = 0.5 * (2 * diagonalLenghtPower2 * time + controlToStartMultiplyMainDiagonal) * integralFrequentPart1 / diagonalLenghtPower2;
-			if (Math.abs(integralFrequentPart2) >= PRECISION) {
+			if (Math.abs(integralFrequentPart2) >= PRECISION)
 				integralValueInTime += Math.log(integralFrequentPart2) / diagonalLenght * integralFrequentPart4;
-			}
 
 			integralValueInZero = 0.5 * (controlToStartMultiplyMainDiagonal) * startToControlLenght / diagonalLenghtPower2;
-			if (Math.abs(integralFrequentPart3) >= PRECISION) {
+			if (Math.abs(integralFrequentPart3) >= PRECISION)
 				integralValueInZero += Math.log(integralFrequentPart3) / diagonalLenght * integralFrequentPart4;
-			}
 		}
 
 		return integralValueInTime - integralValueInZero;
@@ -1017,12 +967,12 @@ class Bezier implements IParametric {
 	 * Площадь этой фигуры составляет 2/3 площади треугольника ∆SCE, 
 	 * образуемого контрольными точками <code>start, control, end</code>.
 	 * 
-	 * @return Number площадь кривой Безье
+	 * @return Float площадь кривой Безье
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1031,7 +981,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const randomBezier:Bezier = randomBezier();
+	 *	var randomBezier:Bezier = randomBezier();
 	 *	
 	 *  trace("bezier area: "+randomBezier.area);
 	 *	
@@ -1048,12 +998,12 @@ class Bezier implements IParametric {
 	 * Calculates and returns an area of the figure, limited by Bezier curve and a segment, connecting the initial point and the end point.
 	 * The area of this figure makes 2/3 areas of a triangle ∆SCE, which is formed of control points <code>start, control, end</code>.
 	 * 
-	 * @return Number an area of the Bezier curve
+	 * @return Float an area of the Bezier curve
 	 *
 	 * @example <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1062,7 +1012,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * trace("bezier area: "+randomBezier.area);
 	 *
 	 * </listing>
@@ -1075,7 +1025,10 @@ class Bezier implements IParametric {
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 *
 	 **/
-	public function get area() : Number {
+	
+	public var area(get, never):Float;
+	
+	inline function get_area():Float {
 		return this.triangleArea * (2.0 / 3.0);
 	}
 
@@ -1083,12 +1036,12 @@ class Bezier implements IParametric {
 	 * Вычисляет и возвращает площадь треугольника ∆SCE, 
 	 * образуемого контрольными точками <code>start, control, end</code>.  
 	 * 
-	 * @return Number площадь треугольника, ограничиваюшего кривую Безье
+	 * @return Float площадь треугольника, ограничиваюшего кривую Безье
 	 * 
 	 * @example <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1097,7 +1050,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * trace("triangle area: "+randomBezier.triangleArea);
 	 *
 	 * </listing>
@@ -1112,12 +1065,12 @@ class Bezier implements IParametric {
 	 **/
 	/**
 	 * Calculates and returns an area of the triangle ∆SCE, which is formed of control points <code>start, control, end</code>.
-	 * @return Number an area of the triangle, limiting a Bezier curve
+	 * @return Float an area of the triangle, limiting a Bezier curve
 	 * 
 	 * @example <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1126,7 +1079,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * trace("triangle area: "+randomBezier.triangleArea);
 	 * </listing>
 	 * 
@@ -1138,12 +1091,16 @@ class Bezier implements IParametric {
 	 **/
 	// Логика работы метода - вычисление площади треугольника по формуле Герона.
 	// The logic of method - calculate an area of a triangle using the Heron's formula.
-	public function get triangleArea() : Number {
-		const distanceStartControl : Number = Point.distance(startPoint, controlPoint);
-		const distanceEndControl : Number = Point.distance(endPoint, controlPoint);
-		const distanceStartEnd : Number = Point.distance(startPoint, endPoint);
-		const halfPerimeter : Number = (distanceStartControl + distanceEndControl + distanceStartEnd) / 2;
-		const area : Number = Math.sqrt(halfPerimeter * (halfPerimeter - distanceStartControl) * (halfPerimeter - distanceEndControl) * (halfPerimeter - distanceStartEnd));
+	
+	public var triangleArea(get, never):Float;
+	
+	function get_triangleArea():Float {
+		
+		var distanceStartControl = Point.distance(start, control);
+		var distanceEndControl = Point.distance(end, control);
+		var distanceStartEnd = Point.distance(start, end);
+		var halfPerimeter = (distanceStartControl + distanceEndControl + distanceStartEnd) / 2;
+		var area = Math.sqrt(halfPerimeter * (halfPerimeter - distanceStartControl) * (halfPerimeter - distanceEndControl) * (halfPerimeter - distanceStartEnd));
 		return area;
 	}
 
@@ -1154,8 +1111,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается случайна кривая Безье, и выводится ее центр тяжести.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1164,7 +1121,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.internalCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1187,8 +1144,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example In this example a random Bezier curve is created, and its center of gravity is derived.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1197,7 +1154,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.internalCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1210,9 +1167,12 @@ class Bezier implements IParametric {
 	 * @playerversion Flash 9.0
 	 * 
 	 */
-	public function get internalCentroid() : Point {
-		const x : Number = (startPoint.x + endPoint.x) * 0.4 + controlPoint.x * 0.2;
-		const y : Number = (startPoint.y + endPoint.y) * 0.4 + controlPoint.y * 0.2;
+	
+	public var internalCentroid(get, never):Point;
+	 
+	function get_internalCentroid():Point {
+		var x = (start.x + end.x) * 0.4 + control.x * 0.2;
+		var y = (start.y + end.y) * 0.4 + control.y * 0.2;
 		return new Point(x, y);
 	}
 
@@ -1223,8 +1183,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается случайна кривая Безье, и выводится центр тяжести внешней фигуры.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1233,7 +1193,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.externalCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1254,8 +1214,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example In this example a random Bezier curve is created and a center of gravity of the outside figure is derived.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1264,7 +1224,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.externalCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1278,9 +1238,12 @@ class Bezier implements IParametric {
 	 * 
 	 * @lang rus
 	 */
-	public function get externalCentroid() : Point {
-		const x : Number = (startPoint.x + endPoint.x) * 0.2 + controlPoint.x * 0.6 ;
-		const y : Number = (startPoint.y + endPoint.y) * 0.2 + controlPoint.y * 0.6;
+	
+	public var externalCentroid(get, never):Point;
+	
+	function get_externalCentroid():Point {
+		var x = (start.x + end.x) * 0.2 + control.x * 0.6 ;
+		var y = (start.y + end.y) * 0.2 + control.y * 0.6;
 		return new Point(x, y);
 	}
 
@@ -1291,8 +1254,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается случайна кривая Безье, и выводится центр тяжести описывающего ее треугольника.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *		
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1301,7 +1264,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.triangleCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1322,8 +1285,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example In this example a random Bezier curve is created and a center of gravity of its bounding triangle is derived.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1332,7 +1295,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var point:Point = randomBezier.triangleCentroid;
 	 * trace(point.x+" "+point.y); 
 	 *  
@@ -1344,9 +1307,12 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function get triangleCentroid() : Point {
-		const x : Number = (startPoint.x + endPoint.x + controlPoint.x) / 3 ;
-		const y : Number = (startPoint.y + endPoint.y + controlPoint.y) / 3;
+	
+	public var triangleCentroid(get, never):Point;
+	
+	function get_triangleCentroid():Point {
+		var x = (start.x + end.x + control.x) / 3 ;
+		var y = (start.y + end.y + control.y) / 3;
 		return new Point(x, y);
 	}
 
@@ -1358,8 +1324,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example В этом примере создается случайна кривая Безье, и выводится центр тяжести описывающего ее треугольника.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 * import flash.geom.Rectangle;
 	 *		
 	 * function randomPoint():Point {
@@ -1369,7 +1335,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var boundBox:Rectangle = randomBezier.bounds;
 	 * trace(boundBox.x+" "+boundBox.y+" "+boundBox.width+" "+boundBox.height); 
 	 *  
@@ -1388,8 +1354,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example In this example a random Bezier curve is created and a center of gravity of its bounding triangle is derived.
 	 * <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 * import flash.geom.Rectangle;
 	 *		
 	 * function randomPoint():Point {
@@ -1399,7 +1365,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 * var boundBox:Rectangle = randomBezier.bounds;
 	 * trace(boundBox.x+" "+boundBox.y+" "+boundBox.width+" "+boundBox.height); 
 	 *  
@@ -1412,38 +1378,41 @@ class Bezier implements IParametric {
 	 */
 	// Логика работы метода - вычисляются минимальные и максимальные значения координат из начальной и конечной точек, и возможно, точек экстремума по каждой из координат.
 	// Logic of the method - calculate minimum and maximum values of the coordinates of the initial and end points, and perhaps the extreme points in each of the coordinates.
-	public function get bounds() : Rectangle {
-		var xMin : Number = Math.min(startPoint.x, endPoint.x);
-		var xMax : Number = Math.max(startPoint.x, endPoint.x);
-		var yMin : Number = Math.min(startPoint.y, endPoint.y);
-		var yMax : Number = Math.max(startPoint.y, endPoint.y);
+	
+	public var bounds(get, never):Rect;
+	
+	function get_bounds():Rect {
+		var xMin = Math.min(start.x, end.x);
+		var xMax = Math.max(start.x, end.x);
+		var yMin = Math.min(start.y, end.y);
+		var yMax = Math.max(start.y, end.y);
 
-		const controlToStartVector : Point = POINT0;
+		var controlToStartVector = POINT0;
 		controlToStartVector.x = start.x - control.x;
 		controlToStartVector.y = start.y - control.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const extremumTimeX : Number = controlToStartVector.x / diagonalVector.x;
-		const extremumTimeY : Number = controlToStartVector.y / diagonalVector.y;
+		var extremumTimeX = controlToStartVector.x / diagonalVector.x;
+		var extremumTimeY = controlToStartVector.y / diagonalVector.y;
 
-		if ((!isNaN(extremumTimeX)) && (extremumTimeX > 0) && (extremumTimeX < 1)) {
-			const extremumPointX : Point = getPoint(extremumTimeX);
+		if ((!Math.isNaN(extremumTimeX)) && (extremumTimeX > 0) && (extremumTimeX < 1)) {
+			var extremumPointX = getPoint(extremumTimeX);
 			xMin = Math.min(extremumPointX.x, xMin);
 			xMax = Math.max(extremumPointX.x, xMax);
 		}
 
-		if ((!isNaN(extremumTimeY)) && (extremumTimeY > 0) && (extremumTimeY < 1)) {
-			const extemumPointY : Point = getPoint(extremumTimeY);
+		if ((!Math.isNaN(extremumTimeY)) && (extremumTimeY > 0) && (extremumTimeY < 1)) {
+			var extemumPointY = getPoint(extremumTimeY);
 			yMin = Math.min(extemumPointY.y, yMin);
 			yMax = Math.max(extemumPointY.y, yMax);
 		}
 
-		const width : Number = xMax - xMin;
-		const height : Number = yMax - yMin;
-		return new Rectangle(xMin, yMin, width, height);
+		var width = xMax - xMin;
+		var height = yMax - yMin;
+		return new Rect(xMin, yMin, width, height);
 	}
 
 	// **************************************************
@@ -1453,11 +1422,11 @@ class Bezier implements IParametric {
 	 * Вычисляет и возвращает time-итератор вершины родительской параболы.
 	 * Точку можно получить из итератора методом getPoint у кривой Безье, так как вершина параболы принадлежит ей. 
 	 * 
-	 * @return Number time-итератор вершины родительской параболы
+	 * @return Float time-итератор вершины родительской параболы
 	 * 
 	 * @example <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *	
 	 * function randomPoint():Point {
 	 *	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1466,7 +1435,7 @@ class Bezier implements IParametric {
 	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 *	
 	 * trace("parabola vertex time: "+randomBezier.parabolaVertex);
 	 *	
@@ -1483,11 +1452,11 @@ class Bezier implements IParametric {
 	 * Calculates and returns the time-iterator of vertex of the parent parabola.
 	 * The point can be obtained from the iterator using the method getPoint from Bezier curve, as the vertex of the parabola belongs to it.
 	 * 
-	 * @return Number time-iterator of vertex of the parent parabola
+	 * @return Float time-iterator of vertex of the parent parabola
 	 *
 	 * @example <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1496,7 +1465,7 @@ class Bezier implements IParametric {
 	 * return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const randomBezier:Bezier = randomBezier();
+	 * var randomBezier:Bezier = randomBezier();
 	 *
 	 * trace("parabola vertex time: "+randomBezier.parabolaVertex);
 	 *
@@ -1509,19 +1478,23 @@ class Bezier implements IParametric {
 	 *
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 **/
-	public function get parabolaVertex() : Number {
-		const controlToStartVector : Point = POINT0;
+	
+	public var parabolaVertex(get, never):Float;
+	 
+	function get_parabolaVertex():Float {
+		
+		var controlToStartVector = POINT0;
 		controlToStartVector.x = start.x - control.x;
 		controlToStartVector.y = start.y - control.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const diagonalLengh : Number = diagonalVector.length;
-		const diagonalLenghtPower2 : Number = diagonalLengh * diagonalLengh;
+		var diagonalLengh = diagonalVector.length;
+		var diagonalLenghtPower2 = diagonalLengh * diagonalLengh;
 
-		var vertexTime : Number = 0.5;
+		var vertexTime = 0.5;
 		if (diagonalLengh > PRECISION) {
 			vertexTime = (diagonalVector.x * controlToStartVector.x + diagonalVector.y * controlToStartVector.y) / diagonalLenghtPower2;
 		}
@@ -1534,8 +1507,8 @@ class Bezier implements IParametric {
 	 * @return Point фокус родительской параболы
 	 * 
 	 * @example <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *	
 	 * function randomPoint():Point {
 	 *	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1544,8 +1517,8 @@ class Bezier implements IParametric {
 	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const randomBezier:Bezier = randomBezier();
-	 * const point:Point = randomBezier.parabolaFocusPoint();
+	 * var randomBezier:Bezier = randomBezier();
+	 * var point:Point = randomBezier.parabolaFocusPoint();
 	 * trace("parabola focus: "+point.x+" "+point.y);
 	 *	
 	 * </listing>
@@ -1563,8 +1536,8 @@ class Bezier implements IParametric {
 	 * @return Point a focus of parent parabola
 	 * 
 	 * @example <listing version="3.0">
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *	
 	 * function randomPoint():Point {
 	 *	return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1573,8 +1546,8 @@ class Bezier implements IParametric {
 	 * 	return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *	
-	 * const randomBezier:Bezier = randomBezier();
-	 * const point:Point = randomBezier.parabolaFocusPoint();
+	 * var randomBezier:Bezier = randomBezier();
+	 * var point:Point = randomBezier.parabolaFocusPoint();
 	 * trace("parabola focus: "+point.x+" "+point.y);
 	 *	
 	 * </listing>
@@ -1585,34 +1558,39 @@ class Bezier implements IParametric {
 	 * @playerversion Flash 9.0
 	 * 
 	 */
-	public function get parabolaFocus() : Point {
-		const startToControlVector : Point = POINT0;
+	
+	public var parabolaFocus(get, never):Point;
+	
+	function get_parabolaFocus():Point {
+		
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const diagonalLenght : Number = diagonalVector.length;
-		const diagonalLenghtPower2 : Number = diagonalLenght * diagonalLenght;
+		var diagonalLenght = diagonalVector.length;
 
 		if (diagonalLenght < PRECISION) {
-			return controlPoint.clone();
+			return control.clone();
 		}
+		
+		var diagonalLenghtPower2 = diagonalLenght * diagonalLenght;
 
-		const vertexTime : Number = -(diagonalVector.x * startToControlVector.x + diagonalVector.y * startToControlVector.y) / diagonalLenghtPower2;
-		const parabolaVertex : Point = getPoint(vertexTime);
-		const parabolaAxisX : Number = 2 * startToControlVector.x + 2 * vertexTime * diagonalVector.x;
-		const parabolaAxisY : Number = 2 * startToControlVector.y + 2 * vertexTime * diagonalVector.y;
-		const parabolaAxisLengthPower2 : Number = parabolaAxisX * parabolaAxisX + parabolaAxisY * parabolaAxisY;
-		const parabolaAxisLength : Number = Math.sqrt(parabolaAxisLengthPower2);
-		const focusLength : Number = parabolaAxisLengthPower2 / diagonalLenght / 4;
+		var vertexTime = -(diagonalVector.x * startToControlVector.x + diagonalVector.y * startToControlVector.y) / diagonalLenghtPower2;
+		var parabolaVertex = getPoint(vertexTime);
+		var parabolaAxisX = 2 * startToControlVector.x + 2 * vertexTime * diagonalVector.x;
+		var parabolaAxisY = 2 * startToControlVector.y + 2 * vertexTime * diagonalVector.y;
+		var parabolaAxisLengthPower2 = parabolaAxisX * parabolaAxisX + parabolaAxisY * parabolaAxisY;
+		var parabolaAxisLength = Math.sqrt(parabolaAxisLengthPower2);
+		var focusLength = parabolaAxisLengthPower2 / diagonalLenght / 4;
 
-		var focusX : Number = parabolaVertex.x - focusLength * parabolaAxisY / parabolaAxisLength;
-		var focusY : Number = parabolaVertex.y + focusLength * parabolaAxisX / parabolaAxisLength;
+		var focusX = parabolaVertex.x - focusLength * parabolaAxisY / parabolaAxisLength;
+		var focusY = parabolaVertex.y + focusLength * parabolaAxisX / parabolaAxisLength;
 
-		const parabolaConvexity : Number = (parabolaAxisY * (start.x - parabolaVertex.x) - parabolaAxisX * (start.y - parabolaVertex.y)) * (parabolaAxisY * (focusX - parabolaVertex.x) - parabolaAxisX * (focusY - parabolaVertex.y));
+		var parabolaConvexity = (parabolaAxisY * (start.x - parabolaVertex.x) - parabolaAxisX * (start.y - parabolaVertex.y)) * (parabolaAxisY * (focusX - parabolaVertex.x) - parabolaAxisX * (focusY - parabolaVertex.y));
 
 		if (parabolaConvexity < 0) {
 			focusX = parabolaVertex.x + focusLength * parabolaAxisY / parabolaAxisLength;
@@ -1634,7 +1612,7 @@ class Bezier implements IParametric {
 	 * эквивалентные <code>start</code> и <code>end</code>, но не сами объекты <code>start</code> и <code>end</code> 
 	 * </I> 
 	 * 
-	 * @param time:Number итератор точки кривой
+	 * @param time:Float итератор точки кривой
 	 * @param point:Point=null необязательный параметр, объект Point, в который будут записаны координаты. 
 	 * Если этот параметр не передан, то будет создан и возвращен новый объект Point с вычисленными координатами.
 	 * 
@@ -1642,8 +1620,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1652,10 +1630,10 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	
-	 *	const time:Number = Math.random();
-	 *	const point:Point = bezier.getPoint(Math.random());
+	 *	var time:Float = Math.random();
+	 *	var point:Point = bezier.getPoint(Math.random());
 	 *	
 	 *	trace(point);
 	 * </listing>
@@ -1674,14 +1652,14 @@ class Bezier implements IParametric {
 	 * but not the objects <code>start</code> and <code>end</code> itself.
 	 * </I>
 	 * 
-	 * @param time:Number iterator of the point of the curve
+	 * @param time:Float iterator of the point of the curve
 	 * @param point:Point=null optional parameter, object Point
 	 * 
 	 * @return Point point on the Bezier curve
 	 * @example <listing version="3.0">
 	 *
-	 * import flash.geom.Bezier;
-	 * import flash.geom.Point;
+	 * import bezier.Bezier;
+	 * import deep.math.Point;
 	 *
 	 * function randomPoint():Point {
 	 * 		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1690,10 +1668,10 @@ class Bezier implements IParametric {
 	 * 		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 * }
 	 *
-	 * const bezier:Bezier = randomBezier();
+	 * var bezier:Bezier = randomBezier();
 	 *
-	 * const time:Number = Math.random();
-	 * const point:Point = bezier.getPoint(time);
+	 * var time:Float = Math.random();
+	 * var point:Point = bezier.getPoint(time);
 	 *
 	 * trace(point);
 	 * </listing>
@@ -1703,17 +1681,15 @@ class Bezier implements IParametric {
 	 * 
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 **/
-	public function getPoint(time : Number, point : Point = null) : Point {
-		if (isNaN(time)) {
-			return null;
-		}
-		point = point || new Point();
-		const invertedTime : Number = 1 - time;
-		const timePower2 : Number = time * time;
-		const invertedTimePower2 : Number = invertedTime * invertedTime;
+	public function getPoint(time:Float, point:Point = null):Point {
+		if (Math.isNaN(time)) return null;
+		if (point == null) point = new Point();
+		var invertedTime = 1 - time;
+		var timePower2 = time * time;
+		var invertedTimePower2 = invertedTime * invertedTime;
 
-		point.x = invertedTimePower2 * startPoint.x + 2 * time * invertedTime * controlPoint.x + timePower2 * endPoint.x;
-		point.y = invertedTimePower2 * startPoint.y + 2 * time * invertedTime * controlPoint.y + timePower2 * endPoint.y;
+		point.x = invertedTimePower2 * start.x + 2 * time * invertedTime * control.x + timePower2 * end.x;
+		point.y = invertedTimePower2 * start.y + 2 * time * invertedTime * control.y + timePower2 * end.y;
 		return point;
 	}
 
@@ -1725,53 +1701,55 @@ class Bezier implements IParametric {
 	 * The decision is made by Newton's method, because function L(t) is monotone and has a derivative everywhere.
 	 * Making the method for calculating multiple values is worthwhile, because a lot of common values are calculated previously.
 	 */
-	protected function getTimesByDistances(distances : Array) : Array {
-		const startToControlVector : Point = POINT0;
+	function getTimesByDistances(distances:Array<Float>):Array<Float> {
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const curveLength : Number = length;
-		const startToControlLenght : Number = startToControlVector.length;
-		const startToControlLenghtPower2 : Number = startToControlLenght * startToControlLenght;
-		const controlToStartMultiplyMainDiagonal : Number = 2 * (startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y);
-		const diagonalLenght : Number = diagonalVector.length;
-		const diagonalLenghtPower2 : Number = diagonalLenght * diagonalLenght;
+		var curveLength = length;
+		var startToControlLenght = startToControlVector.length;
+		var startToControlLenghtPower2 = startToControlLenght * startToControlLenght;
+		var controlToStartMultiplyMainDiagonal = 2 * (startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y);
+		var diagonalLenght = diagonalVector.length;
+		var diagonalLenghtPower2 = diagonalLenght * diagonalLenght;
 
-		const integralFrequentPart1 : Number = 4 * startToControlLenghtPower2 - controlToStartMultiplyMainDiagonal * controlToStartMultiplyMainDiagonal / diagonalLenghtPower2;
-		const integralFrequentPart2 : Number = 0.5 * controlToStartMultiplyMainDiagonal * Math.sqrt(startToControlLenghtPower2) / diagonalLenghtPower2;
-		const integralFrequentPart3 : Number = controlToStartMultiplyMainDiagonal / Math.sqrt(diagonalLenghtPower2) + 2 * Math.sqrt(startToControlLenghtPower2);
-		var integralFrequentPart4 : Number;
-		var integralFrequentPart5 : Number;
-		var integralValueInTime : Number;
-		var integralValueInZero : Number;
-		var arcLength : Number;
-		var derivativeArcLength : Number;
+		var integralFrequentPart1 = 4 * startToControlLenghtPower2 - controlToStartMultiplyMainDiagonal * controlToStartMultiplyMainDiagonal / diagonalLenghtPower2;
+		var integralFrequentPart2 = 0.5 * controlToStartMultiplyMainDiagonal * Math.sqrt(startToControlLenghtPower2) / diagonalLenghtPower2;
+		var integralFrequentPart3 = controlToStartMultiplyMainDiagonal / Math.sqrt(diagonalLenghtPower2) + 2 * Math.sqrt(startToControlLenghtPower2);
+		var integralFrequentPart4:Float;
+		var integralFrequentPart5:Float;
+		var integralValueInTime:Float;
+		var integralValueInZero:Float;
+		var arcLength:Float;
+		var derivativeArcLength:Float;
 
-		var times : Array = new Array();
+		var times = [];
 
-		for (var i : int = 0;i < distances.length; i++) {
-			var distance : Number = distances[i];
+		for (i in 0...distances.length) {
+			var distance = distances[i];
 
-			var maxIterations : Number = 20;
-			var time : Number = distance / curveLength;
+			var maxIterations = 20;
+			var time = distance / curveLength;
 
 			if (diagonalLenght < PRECISION) {
 				if (controlToStartMultiplyMainDiagonal < PRECISION) {
 					do {
 						arcLength = 2 * startToControlLenght * time;
-						derivativeArcLength = 2 * Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2) || PRECISION;
+						derivativeArcLength = 2 * Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2);
+						if (derivativeArcLength == 0) derivativeArcLength = PRECISION;
 						time = time - (arcLength - distance) / derivativeArcLength;
-					} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--));
+					} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--) > 0);
 				} else {
 					do {
 						arcLength = (4 / 3) * (controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2) * Math.sqrt(controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2) / controlToStartMultiplyMainDiagonal - (4 / 3) * startToControlLenghtPower2 * startToControlLenght / controlToStartMultiplyMainDiagonal;
-						derivativeArcLength = 2 * Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2) || PRECISION;
+						derivativeArcLength = 2 * Math.sqrt(diagonalLenghtPower2 * time * time + controlToStartMultiplyMainDiagonal * time + startToControlLenghtPower2);
+						if (derivativeArcLength == 0) derivativeArcLength = PRECISION;
 						time = time - (arcLength - distance) / derivativeArcLength;
-					} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--));
+					} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--) > 0);
 				}
 			} else {
 				do {
@@ -1781,20 +1759,20 @@ class Bezier implements IParametric {
 					integralValueInTime = 0.25 * (2 * diagonalLenghtPower2 * time + controlToStartMultiplyMainDiagonal) * integralFrequentPart4 / diagonalLenghtPower2;
 					integralValueInZero = integralFrequentPart2;
 
-					if (integralFrequentPart5 >= PRECISION) {
+					if (integralFrequentPart5 >= PRECISION)
 						integralValueInTime += 0.25 * Math.log(integralFrequentPart5) / diagonalLenght * integralFrequentPart1;
-					}
-					if (integralFrequentPart3 >= PRECISION) {
+					
+					if (integralFrequentPart3 >= PRECISION)
 						integralValueInZero += 0.25 * Math.log(controlToStartMultiplyMainDiagonal / diagonalLenght + 2 * startToControlLenght) / diagonalLenght * integralFrequentPart1;
-					}
 
 					arcLength = integralValueInTime - integralValueInZero;
-					derivativeArcLength = integralFrequentPart4 || PRECISION;
+					derivativeArcLength = integralFrequentPart4;
+					if (derivativeArcLength == 0) derivativeArcLength = PRECISION;
 					time = time - (arcLength - distance) / derivativeArcLength;
-				} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--));
+				} while ((Math.abs(arcLength - distance) > PRECISION) && (maxIterations--) > 0);
 			}
 
-			times[times.length] = time;
+			times.push(time);
 		}
 
 		return times;
@@ -1806,14 +1784,14 @@ class Bezier implements IParametric {
 	 * <I>Для вычисления равноудаленных последовательностей точек,
 	 * например, для рисования пунктиром, используйте метод getTimesSequence</I>
 	 * 
-	 * @param distance:Number дистанция по кривой до искомой точки.
+	 * @param distance:Float дистанция по кривой до искомой точки.
 	 * 
-	 * @return Number time-итератор искомой точки
+	 * @return Float time-итератор искомой точки
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1822,7 +1800,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 * 
 	 *	trace(bezier.getTimeByDistance(-10); // negative value
 	 *	trace(bezier.getTimeByDistance(bezier.length/2); // value between 0 and 1
@@ -1839,13 +1817,13 @@ class Bezier implements IParametric {
 	 * Calculates time-iterator of the point, located at a given distance along the curve from the point <code>start</code>
 	 * To calculate the equidistant sequence of points, for example, drawing a dotted line, use the method getTimesSequence.
 	 * 
-	 * @param distance:Number a distance from the curve to the desired point
-	 * @return Number time-iterator of the desired point
+	 * @param distance:Float a distance from the curve to the desired point
+	 * @return Float time-iterator of the desired point
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1854,7 +1832,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 * 
 	 *	trace(bezier.getTimeByDistance(-10); // negative value
 	 *	trace(bezier.getTimeByDistance(bezier.length/2); // value between 0 and 1
@@ -1868,25 +1846,19 @@ class Bezier implements IParametric {
 	 */
 	// Логика работы метода - сводится к общему методу вычисления массива итераторов по массиву дистанций
 	// Logic of the method - reduces the common method of calculating the iterators array over distances array
-	public function getTimeByDistance(distance : Number) : Number {
-		if (isNaN(distance)) {
-			return Number.NaN;
+	public function getTimeByDistance(distance:Float):Float {
+		if (Math.isNaN(distance)) return Math.NaN;
+
+		var curveLength = this.length;
+
+		if (isSegment) {
+			if (distance <= 0) return 0;
+			if (distance >= curveLength) return 1;
 		}
 
-		const curveLength : Number = this.length;
-
-		if (__isSegment) {
-			if (distance <= 0) {
-				return 0;
-			}
-			if (distance >= curveLength) {
-				return 1;
-			}
-		}
-
-		var distances : Array = new Array();
+		var distances = new Array();
 		distances.push(distance);
-		var times : Array = getTimesByDistances(distances);
+		var times = getTimesByDistances(distances);
 
 		return times[0];
 	}
@@ -1900,16 +1872,16 @@ class Bezier implements IParametric {
 	 * заданнй этим параметром дистанции.<BR/>
 	 * Значение startShift конвертируется в остаток от деления на step.<BR/> 
 	 *  
-	 * @param step:Number шаг, дистанция по кривой между точками.
-	 * @param startShift:Number дистанция по кривой, задающая смещение первой 
+	 * @param step:Float шаг, дистанция по кривой между точками.
+	 * @param startShift:Float дистанция по кривой, задающая смещение первой 
 	 * точки последовательности относительно точки <code>start</code>
 	 *  
 	 * @return Array массив итераторов
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1918,13 +1890,13 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var points:Array = bezier.getTimesSequence(10, 0);
 	 *
 	 *  for(var i:uint=0; i<points.length; i+=2)
 	 *  {
-	 *  	var startSegmentTime:Number = points[i];
-	 *		var endSegmentTime:Number = points[i+1];
+	 *  	var startSegmentTime:Float = points[i];
+	 *		var endSegmentTime:Float = points[i+1];
 	 *		var segment:Bezier = bezier.getSegment(startSegmentTime, endSegmentTime);
 	 *		drawBezier(segment);
 	 *  }
@@ -1941,8 +1913,8 @@ class Bezier implements IParametric {
 	 * but from the point on the curve, located on a range given by this parameter.
 	 * The value startShift is converted to remainder of division by step.
 	 * 
-	 * @param step:Number a step, distance along the curve between points.
-	 * @param startShift:Number a distance along the curve between points, giving the shift of the first point 
+	 * @param step:Float a step, distance along the curve between points.
+	 * @param startShift:Float a distance along the curve between points, giving the shift of the first point 
 	 * of the sequence relatively to the point <code>start</code>
 	 * 
 	 * @return Array array of the iterators
@@ -1950,8 +1922,8 @@ class Bezier implements IParametric {
 	 * 
 	 * @example <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 *	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 *	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -1960,13 +1932,13 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var points:Array = bezier.getTimesSequence(10, 0);
 	 *
 	 *  for(var i:uint=0; i<points.length; i+=2)
 	 *  {
-	 *  	var startSegmentTime:Number = points[i];
-	 *		var endSegmentTime:Number = points[i+1];
+	 *  	var startSegmentTime:Float = points[i];
+	 *		var endSegmentTime:Float = points[i+1];
 	 *		var segment:Bezier = bezier.getSegment(startSegmentTime, endSegmentTime);
 	 *		drawBezier(segment);
 	 *  }
@@ -1978,33 +1950,27 @@ class Bezier implements IParametric {
 	 */
 	// Логика работы метода - сводится к общему методу вычисления массива итераторов по массиву дистанций
 	// Logic of the method - reduces the common method of calculating the iterators array over distances array
-	public function getTimesSequence(step : Number, startShift : Number = 0) : Array {
+	public function getTimesSequence(step:Float, startShift:Float = 0):Array<Float> {
+		
 		step = Math.abs(step);
 
-		var times : Array = new Array();
-		const curveLength : Number = length;
+		var curveLength = length;
 
-		if (startShift < 0) {
-			startShift = startShift % step + step;
-		} else {
-			startShift = startShift % step;
-		}
+		startShift = if (startShift < 0) startShift % step + step;
+					 else startShift % step;
 
-		if (startShift > curveLength) {
-			return times;
-		}
+		if (startShift > curveLength)
+			return [];
 
-		var distance : Number = startShift;
-		var distances : Array = new Array();
+		var distance = startShift;
+		var distances = [];
 
 		while (distance <= curveLength) {
-			distances[distances.length] = distance;
+			distances.push(distance);
 			distance += step;
 		}
 
-		times = this.getTimesByDistances(distances);
-
-		return times;
+		return getTimesByDistances(distances);
 	}
 
 	// **************************************************
@@ -2018,15 +1984,15 @@ class Bezier implements IParametric {
 	 * <BR/>
 	 * <I>Типичное применение данного метода - организация интерактивного изменения кривой пользователем с помощью мыши.</I>
 	 * 
-	 * @param time:Number time-итератор точки кривой.
-	 * @param x:Number новое значение позиции точки по оси X.
-	 * @param y:Number новое значение позиции точки по оси Y.
+	 * @param time:Float time-итератор точки кривой.
+	 * @param x:Float новое значение позиции точки по оси X.
+	 * @param y:Float новое значение позиции точки по оси Y.
 	 * 
 	 * @example 
 	 * <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2035,7 +2001,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	trace(bezier);
 	 *	
 	 *	bezier.setPoint(0, 0, 0);
@@ -2059,15 +2025,15 @@ class Bezier implements IParametric {
 	 * 
 	 * <I>A typical application of this method is the organization of interactive change of the curve by the user using the mouse.</I>
 	 * 
-	 * @param time:Number a time-iterator of a point of a curve.
-	 * @param x:Number new value of the position of a point on the X axis.
-	 * @param y:Number new value of the position of a point on the Y axis.
+	 * @param time:Float a time-iterator of a point of a curve.
+	 * @param x:Float new value of the position of a point on the X axis.
+	 * @param y:Float new value of the position of a point on the Y axis.
 	 * 
 	 * @example 
 	 * <listing version="3.0">
 	 * 
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2076,7 +2042,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	trace(bezier);
 	 *	
 	 *	bezier.setPoint(0, 0, 0);
@@ -2089,37 +2055,30 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function setPoint(time : Number, newX : Number = undefined, newY : Number = undefined) : void {
-		if ((isNaN(newX) && isNaN(newY))) {
-			return;
-		}
+	public function setPoint(time:Float, ?x:Float, ?y:Float):Void {
+		
+		if ((x == null || Math.isNaN(x)) && (y == null || Math.isNaN(y))) return;
 
-		const invertedTime : Number = 1 - time;
-		const timePower2 : Number = time * time;
-		const invertedTimePower2 : Number = invertedTime * invertedTime;
-		const timeMultiplyInvertedTime : Number = 2 * time * invertedTime;
+		var invertedTime = 1 - time;
+		var timePower2 = time * time;
+		var invertedTimePower2 = invertedTime * invertedTime;
+		var timeMultiplyInvertedTime = 2 * time * invertedTime;
 
-		var point : Point = this.getPoint(time);
+		var point = getPoint(time);
 
-		if (isNaN(newX)) {
-			newX = point.x;
-		}
-		if (isNaN(newY)) {
-			newY = point.y;
-		}
+		if (x == null || Math.isNaN(x)) x = point.x;
+		if (y == null || Math.isNaN(y)) y = point.y;
 
 		switch (time) {
 			case 0:
-				startPoint.x = newX;
-				startPoint.y = newY;
-				break;
+				start.x = x;
+				start.y = y;
 			case 1:
-				endPoint.x = newX;
-				endPoint.y = newY;
-				break;
+				end.x = x;
+				end.y = y;
 			default:
-				controlPoint.x = (newX - timePower2 * endPoint.x - invertedTimePower2 * startPoint.x) / timeMultiplyInvertedTime;
-				controlPoint.y = (newY - timePower2 * endPoint.y - invertedTimePower2 * startPoint.y ) / timeMultiplyInvertedTime;
+				control.x = (x - timePower2 * end.x - invertedTimePower2 * start.x) / timeMultiplyInvertedTime;
+				control.y = (y - timePower2 * end.y - invertedTimePower2 * start.y) / timeMultiplyInvertedTime;
 		}
 	}
 
@@ -2127,7 +2086,7 @@ class Bezier implements IParametric {
 	 * Поворачивает кривую относительно точки <code>fulcrum</code> на заданный угол.
 	 * Если точка <code>fulcrum</code> не задана, используется (0,0)
 	 * 
-	 * @param value:Number угол поворота 
+	 * @param value:Float угол поворота 
 	 * @param fulcrum:Point центр вращения
 	 * 
 	 * @langversion 3.0
@@ -2138,30 +2097,33 @@ class Bezier implements IParametric {
 	 * Rotate the curve relative to the point <code>fulcrum</code> at a given angle.
 	 * If the point <code>fulcrum</code> is not given, (0,0) is used
 	 * 
-	 * @param value:Number angle of rotation
+	 * @param value:Float angle of rotation
 	 * @param fulcrum:Point rotation center
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function angleOffset(value : Number, fulcrum : Point = null) : void {
-		fulcrum = fulcrum || POINT0;
-		POINT0.x = 0;
-		POINT0.y = 0;
+	public function angleOffset(value:Float, fulcrum:Point = null):Void {
+		
+		if (fulcrum == null) {
+			POINT0.x = 0;
+			POINT0.y = 0;
+			fulcrum = POINT0;
+		}
 
-		const startLine : Line = new Line(fulcrum, startPoint);
+		var startLine = new Line(fulcrum, start);
 		startLine.angle += value;
-		const controlLine : Line = new Line(fulcrum, controlPoint);
+		var controlLine = new Line(fulcrum, control);
 		controlLine.angle += value;
-		const endLine : Line = new Line(fulcrum, endPoint);
+		var endLine = new Line(fulcrum, end);
 		endLine.angle += value;
 	}
 
 	/* *
 	 * Смещает кривую на заданное расстояние по осям X и Y.  
 	 * 
-	 * @param dx:Number величина смещения по оси X
-	 * @param dy:Number величина смещения по оси Y
+	 * @param dx:Float величина смещения по оси X
+	 * @param dy:Float величина смещения по оси Y
 	 *  
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0 
@@ -2170,8 +2132,8 @@ class Bezier implements IParametric {
 	/**
 	 * Moves a curve on the prescribed distance on axes X and Y.
 	 *
-	 * @param dx:Number offset by X
-	 * @param dy:Number offset by Y
+	 * @param dx:Float offset by X
+	 * @param dy:Float offset by Y
 	 *
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
@@ -2180,10 +2142,10 @@ class Bezier implements IParametric {
 	 * @translator Ilya Segeda http://www.digitaldesign.com.ua
 	 *
 	 */
-	public function offset(dX : Number = 0, dY : Number = 0) : void {
-		startPoint.offset(dX, dY);
-		controlPoint.offset(dX, dY);
-		endPoint.offset(dX, dY);
+	inline public function offset(dx:Float = 0, dy:Float = 0):Void {
+		start.offset(dx, dy);
+		control.offset(dx, dy);
+		end.offset(dx, dy);
 	}
 
 	/* *
@@ -2216,35 +2178,37 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function getExistedPointIterators(point : Point) : Array {
-		const startToControlVector : Point = POINT0;
+	public function getExistedPointIterators(point:Point):Array<Float> {
+		
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		var squareCoefficient : Number = diagonalVector.x;
-		var linearCoefficient : Number = 2 * startToControlVector.x;
-		var freeCoefficient : Number = start.x - point.x;
-		var solutions : Array = Equations.solveQuadraticEquation(squareCoefficient, linearCoefficient, freeCoefficient);
+		var squareCoefficient = diagonalVector.x;
+		var linearCoefficient = 2 * startToControlVector.x;
+		var freeCoefficient = start.x - point.x;
+		var solutions = Equations.solveQuadraticEquation(squareCoefficient, linearCoefficient, freeCoefficient);
 
-		if (!solutions) {
+		if (solutions == null) {
 			squareCoefficient = diagonalVector.y;
 			linearCoefficient = 2 * startToControlVector.y;
 			freeCoefficient = start.y - point.y;
 			solutions = Equations.solveQuadraticEquation(squareCoefficient, linearCoefficient, freeCoefficient);
 		}
 
-		var iteratorsArray : Array = new Array();
+		var iteratorsArray = [];
 
-		if (solutions) {
-			for (var i : uint = 0;i < solutions.length; i++) {
-				if ((!isSegment) || ((solutions[i] >= 0) && (solutions[i] <= 1))) {
-					var foundPoint : Point = getPoint(solutions[i]);
+		if (solutions != null) {
+			for (i in 0...solutions.length) {
+				var s = solutions[i];
+				if ((!isSegment) || ((s >= 0) && (s <= 1))) {
+					var foundPoint = getPoint(s);
 					if (Point.distance(foundPoint, point) < PRECISION) {
-						iteratorsArray.push(solutions[i]);
+						iteratorsArray.push(s);
 					}
 				}
 			}
@@ -2265,12 +2229,12 @@ class Bezier implements IParametric {
 	 * 
 	 * @param fromPoint:Point произвольная точка на плоскости
 	 * 
-	 * @return Number time-итератор ближайшей точки на кривой.
+	 * @return Float time-итератор ближайшей точки на кривой.
 	 * 
 	 * @example
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2279,9 +2243,9 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var fromPoint:Point = randomPoint();
-	 *	var closest:Number = bezier.getClosest(fromPoint);
+	 *	var closest:Float = bezier.getClosest(fromPoint);
 	 * 
 	 *  trace(bezier);
 	 *  trace(fromPoint);
@@ -2302,12 +2266,12 @@ class Bezier implements IParametric {
 	 * 
 	 * @param fromPoint:Point arbitrary point on the plane
 	 * 
-	 * @return Number time-iterator of the nearest point on a curve.
+	 * @return Float time-iterator of the nearest point on a curve.
 	 * 
 	 * @example
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2316,9 +2280,9 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var fromPoint:Point = randomPoint();
-	 *	var closest:Number = bezier.getClosest(fromPoint);
+	 *	var closest:Float = bezier.getClosest(fromPoint);
 	 * 
 	 *  trace(bezier);
 	 *  trace(fromPoint);
@@ -2331,38 +2295,33 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 **/
-	public function getClosest(fromPoint : Point) : Number {
-		if (!fromPoint) {
-			return NaN;
-		}
+	public function getClosest(fromPoint:Point):Float {
 
-		var curveAsPoint : Point = this.asPoint();
-		if (curveAsPoint) {
-			return 0;
-		}
+		var curveAsPoint = this.asPoint();
+		if (curveAsPoint != null) return 0;
 
-		const startToControlVector : Point = POINT0;
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const fromPointToStartVector : Point = POINT2;
-		fromPointToStartVector.x = startPoint.x - fromPoint.x;
-		fromPointToStartVector.y = startPoint.y - fromPoint.y;
+		var fromPointToStartVector = POINT2;
+		fromPointToStartVector.x = start.x - fromPoint.x;
+		fromPointToStartVector.y = start.y - fromPoint.y;
 
-		const startToControlLenght : Number = startToControlVector.length;
-		const startToControlLenghtPower2 : Number = startToControlLenght * startToControlLenght;
-		const controlToStartMultiplyMainDiagonal : Number = startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y;
-		const diagonalLenght : Number = diagonalVector.length;
-		const diagonalLenghtPower2 : Number = diagonalLenght * diagonalLenght;
-		const fromPointToStartMultiplyMainDiagonal : Number = fromPointToStartVector.x * diagonalVector.x + fromPointToStartVector.y * diagonalVector.y;
-		const fromPointToStartMultiplyStartToControl : Number = startToControlVector.x * fromPointToStartVector.x + startToControlVector.y * fromPointToStartVector.y;
+		var startToControlLenght = startToControlVector.length;
+		var startToControlLenghtPower2 = startToControlLenght * startToControlLenght;
+		var controlToStartMultiplyMainDiagonal = startToControlVector.x * diagonalVector.x + startToControlVector.y * diagonalVector.y;
+		var diagonalLenght = diagonalVector.length;
+		var diagonalLenghtPower2 = diagonalLenght * diagonalLenght;
+		var fromPointToStartMultiplyMainDiagonal = fromPointToStartVector.x * diagonalVector.x + fromPointToStartVector.y * diagonalVector.y;
+		var fromPointToStartMultiplyStartToControl = startToControlVector.x * fromPointToStartVector.x + startToControlVector.y * fromPointToStartVector.y;
 
-		var extremumTimes : Array;
-		var cubicCoefficient : Number, squareCoefficient : Number, linearCoefficient : Number, freeCoefficient : Number;
+		var extremumTimes:Array<Float>;
+		var cubicCoefficient:Float, squareCoefficient:Float, linearCoefficient:Float, freeCoefficient:Float;
 
 		if (diagonalLenght > PRECISION) {
 			cubicCoefficient = 1;
@@ -2378,21 +2337,21 @@ class Bezier implements IParametric {
 			extremumTimes = Equations.solveLinearEquation(linearCoefficient, freeCoefficient);
 		}
 
-		if (__isSegment) {
+		if (isSegment) {
 			extremumTimes.push(0);
 			extremumTimes.push(1);
 		}
 
-		var extremumTime : Number;
-		var extremumPoint : Point;
-		var extremumDistance : Number;
+		var extremumTime:Float;
+		var extremumPoint:Point;
+		var extremumDistance:Float;
 
-		var closestPointTime : Number;
-		var closestDistance : Number;
+		var closestPointTime:Float = Math.NaN;
+		var closestDistance:Float = 0;
 
-		var isInside : Boolean;
+		var isInside:Bool;
 
-		for (var i : uint = 0;i < extremumTimes.length; i++) {
+		for (i in 0...extremumTimes.length) {
 			extremumTime = extremumTimes[i];
 			extremumPoint = getPoint(extremumTime);
 
@@ -2400,8 +2359,8 @@ class Bezier implements IParametric {
 
 			isInside = (extremumTime >= 0) && (extremumTime <= 1);
 
-			if (isNaN(closestPointTime)) {
-				if (!__isSegment || isInside) {
+			if (Math.isNaN(closestPointTime)) {
+				if (!isSegment || isInside) {
 					closestPointTime = extremumTime;
 					closestDistance = extremumDistance;
 				}
@@ -2409,7 +2368,7 @@ class Bezier implements IParametric {
 			}
 
 			if (extremumDistance < closestDistance) {
-				if (!__isSegment || isInside) {
+				if (!isSegment || isInside) {
 					closestPointTime = extremumTime;
 					closestDistance = extremumDistance;
 				}
@@ -2425,8 +2384,8 @@ class Bezier implements IParametric {
 	/* *
 	 * Вычисляет и возвращает сегмент кривой Безье, заданный начальным и конечным итераторами.
 	 * 
-	 * @param fromTime:Number time-итератор начальной точки сегмента
-	 * @param toTime:Number time-итератор конечной точки сегмента кривой
+	 * @param fromTime:Float time-итератор начальной точки сегмента
+	 * @param toTime:Float time-итератор конечной точки сегмента кривой
 	 * 
 	 * @return Bezier;
 	 * 
@@ -2434,8 +2393,8 @@ class Bezier implements IParametric {
 	 * В данном примере на основе случайной кривой Безье создаются еще две.
 	 * Первая из них - <code>segment1</code> 
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2444,9 +2403,9 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const bezier:Bezier = randomBezier();
-	 * const segment1:Bezier = bezier.getSegment(1/3, 2/3);
-	 * const segment2:Bezier = bezier.getSegment(-1, 2);
+	 * var bezier:Bezier = randomBezier();
+	 * var segment1:Bezier = bezier.getSegment(1/3, 2/3);
+	 * var segment2:Bezier = bezier.getSegment(-1, 2);
 	 * 
 	 * </listing>
 	 * 
@@ -2458,16 +2417,16 @@ class Bezier implements IParametric {
 	/**
 	 * Calculates and returns a segment of a Bezier curve, defined by initial and end iterators.
 	 * 
-	 * @param fromTime:Number a time-iterator of an initial point of a segment of curve
-	 * @param toTime:Number time--iterator of an end point of a segment of curve
+	 * @param fromTime:Float a time-iterator of an initial point of a segment of curve
+	 * @param toTime:Float time--iterator of an end point of a segment of curve
 	 * 
 	 * @return Bezier;
 	 * 
 	 * @example In this example two Bezier curves are created on basis of random Bezier curve.<BR/>
 	 * Frist of it is <code>segment1</code>
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2476,21 +2435,22 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 * const bezier:Bezier = randomBezier();
-	 * const segment1:Bezier = bezier.getSegment(1/3, 2/3);
-	 * const segment2:Bezier = bezier.getSegment(-1, 2);
+	 * var bezier:Bezier = randomBezier();
+	 * var segment1:Bezier = bezier.getSegment(1/3, 2/3);
+	 * var segment2:Bezier = bezier.getSegment(-1, 2);
 	 * 
 	 * </listing>
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function getSegment(fromTime : Number = 0, toTime : Number = 1) : Bezier {
-		const segmentStart : Point = getPoint(fromTime);
-		const segmentEnd : Point = getPoint(toTime);
-		const segmentVertex : Point = getPoint((fromTime + toTime) / 2);
-		const baseMiddle : Point = Point.interpolate(segmentStart, segmentEnd, 0.5);
-		const segmentControl : Point = Point.interpolate(segmentVertex, baseMiddle, 2);
+	public function getSegment(fromTime:Float = 0, toTime:Float = 1):Bezier {
+		
+		var segmentStart = getPoint(fromTime);
+		var segmentEnd = getPoint(toTime);
+		var segmentVertex = getPoint((fromTime + toTime) / 2);
+		var baseMiddle = Point.interpolate(segmentStart, segmentEnd, 0.5);
+		var segmentControl = Point.interpolate(segmentVertex, baseMiddle, 2);
 		return new Bezier(segmentStart, segmentControl, segmentEnd, true);
 	}
 
@@ -2502,13 +2462,13 @@ class Bezier implements IParametric {
 	 * Метод вычисляет и возвращает угол наклона точке кривой Безье, заданной time-итератором.
 	 * Возвращаемое значение находится в пределах от отрицательного PI до положительного PI.
 	 * 
-	 * @param t:Number time-итератор точки на кривой
-	 * @return Number угол наклона касательной
+	 * @param t:Float time-итератор точки на кривой
+	 * @return Float угол наклона касательной
 	 * 
 	 * @example 
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2517,7 +2477,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 * </listing>
 	 * 
 	 * @langversion 3.0
@@ -2530,13 +2490,13 @@ class Bezier implements IParametric {
 	 * The method calculates and returns the inclination to a point of a Bezier curve, defined by time-iterator.
 	 * The return value is in the range from negative PI to positive PI.
 	 * 
-	 * @param t:Number time-iterator of a point on a curve
-	 * @return Number tangent inclination
+	 * @param t:Float time-iterator of a point on a curve
+	 * @return Float tangent inclination
 	 * 
 	 * @example 
 	 * <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2545,24 +2505,25 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 * </listing>
 	 * 
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 * 
 	 */
-	public function getTangentAngle(time : Number = 0) : Number {
-		const startToControlVector : Point = POINT0;
+	public function getTangentAngle(time:Float = 0):Float {
+		
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const tangentX : Number = startToControlVector.x + diagonalVector.x * time;
-		const tangentY : Number = startToControlVector.y + diagonalVector.y * time;
+		var tangentX = startToControlVector.x + diagonalVector.x * time;
+		var tangentY = startToControlVector.y + diagonalVector.y * time;
 		return Math.atan2(tangentY, tangentX);
 	}
 
@@ -2578,8 +2539,8 @@ class Bezier implements IParametric {
 	 * @return Intersection объект с описанием пересечения
 	 *  
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2588,7 +2549,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var intersection:Intersection = bezier.intersectionPoint(new Point(100, 100));
 	 *	trace(intersection);
 	 *	
@@ -2610,8 +2571,8 @@ class Bezier implements IParametric {
 	 * @return Intersection the object with the description of intersection
 	 *  
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2620,7 +2581,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var intersection:Intersection = bezier.intersectionPoint(new Point(100, 100));
 	 *	trace(intersection);
 	 *	
@@ -2631,15 +2592,15 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function intersectionPoint(target : Point) : Intersection {
-		var intersection : Intersection = new Intersection();
+	public function intersectionPoint(target:Point):Intersection {
+		
+		var intersection = new Intersection();
 
-		var closestTime : Number = this.getClosest(target);
-		var closestPoint : Point = this.getPoint(closestTime);
+		var closestTime = this.getClosest(target);
+		var closestPoint = this.getPoint(closestTime);
 
-		if (Point.distance(target, closestPoint) < PRECISION) {
-			intersection.addIntersection(closestTime, 0, this.isSegment, false);
-		}
+		if (Point.distance(target, closestPoint) < PRECISION)
+			intersection.addIntersection(closestTime, 0, isSegment, false);
 
 		return intersection;
 	}
@@ -2662,8 +2623,8 @@ class Bezier implements IParametric {
 	 * @return Intersection объект с описанием пересечения
 	 *  
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	import flash.geom.Line;
 	 *	
 	 *	function randomPoint():Point {
@@ -2673,7 +2634,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var target:Line = new Line(new Point(100, 100), new Point(200, 200));
 	 *	var intersection:Intersection = bezier.intersectionLine(target);
 	 *	trace(intersection);
@@ -2706,8 +2667,8 @@ class Bezier implements IParametric {
 	 * @return Intersection the object with the description of intersection
 	 *  
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	import flash.geom.Line;
 	 *	
 	 *	function randomPoint():Point {
@@ -2717,7 +2678,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var target:Line = new Line(new Point(100, 100), new Point(200, 200));
 	 *	var intersection:Intersection = bezier.intersectionLine(target);
 	 *	trace(intersection);
@@ -2729,19 +2690,18 @@ class Bezier implements IParametric {
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function intersectionLine(target : Line) : Intersection {
-		var intersection : Intersection = new Intersection();
-		var i : int;
+	public function intersectionLine(target:Line):Intersection {
+		var intersection = new Intersection();
 
-		var curveAsPoint : Point = this.asPoint();
-		if (curveAsPoint) {
+		var curveAsPoint = this.asPoint();
+		if (curveAsPoint != null) {
 			intersection = target.intersectionPoint(curveAsPoint);
 			intersection.switchCurrentAndTarget();
 			return intersection;
 		}
 
-		var curveAsLine : Line = this.asLine();
-		if (curveAsLine) {
+		var curveAsLine = this.asLine();
+		if (curveAsLine != null) {
 			intersection = target.intersectionLine(curveAsLine);
 			intersection.switchCurrentAndTarget();
 			intersection.translateCurrentIterators(curveAsLine, this);
@@ -2749,8 +2709,8 @@ class Bezier implements IParametric {
 			return intersection;
 		}
 
-		var targetAsPoint : Point = target.asPoint();
-		if (targetAsPoint) {
+		var targetAsPoint = target.asPoint();
+		if (targetAsPoint != null) {
 			intersection = this.intersectionPoint(targetAsPoint);
 			return intersection;
 		}
@@ -2760,25 +2720,25 @@ class Bezier implements IParametric {
 		// if none of the checks passed, then we have a real curve and a real line.
 		// solving a pure chance!
 
-		const startToControlVector : Point = POINT0;
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const lineVector : Point = POINT2;
+		var lineVector = POINT2;
 		lineVector.x = target.start.x - target.end.x;
 		lineVector.y = target.start.y - target.end.y;
 
-		const deltaStarts : Point = POINT3;
+		var deltaStarts = POINT3;
 		deltaStarts.x = start.x - target.start.x;
 		deltaStarts.y = start.y - target.start.y;
 
-		var coefficientInPower2 : Number, coefficientInPower1 : Number, coefficientInPower0 : Number;
-		var solutionsForCurve : Array;
-		var solutionForLine : Number, solutionForCurve : Number;
+		var coefficientInPower2:Float, coefficientInPower1:Float, coefficientInPower0:Float;
+		var solutionsForCurve:Array<Float>;
+		var solutionForLine:Float, solutionForCurve:Float;
 
 		/*
 		 * Дальше решается векторное уравнение (по 2 координатам - система 2 уравнений):
@@ -2806,7 +2766,7 @@ class Bezier implements IParametric {
 
 			solutionsForCurve = Equations.solveQuadraticEquation(coefficientInPower2, coefficientInPower1, coefficientInPower0);
 
-			if (!solutionsForCurve) {
+			if (solutionsForCurve == null) {
 				// вообще, такого быть не может - если кривая совпала с прямой, то она сама прямая, и это обработалось в начале метода
 				return null;
 			}
@@ -2816,14 +2776,14 @@ class Bezier implements IParametric {
 				// но все же, решение найти можно
 				// in general, this can not happen - if the curve degenerates to a point, it is processed in the beginning of the method
 				// but still, the solution could be found
-				for (i = 0;i < solutionsForCurve.length; i++) {
+				for (i in 0...solutionsForCurve.length) {
 					solutionForCurve = solutionsForCurve[i];
 					solutionForLine = 0;
 
 					intersection.addIntersection(solutionForCurve, solutionForLine, this.isSegment, target.isSegment);
 				}
 			} else {
-				for (i = 0;i < solutionsForCurve.length; i++) {
+				for (i in 0...solutionsForCurve.length) {
 					solutionForCurve = solutionsForCurve[i];
 					solutionForLine = -(diagonalVector.y * Math.pow(solutionForCurve, 2) + 2 * startToControlVector.y * solutionForCurve + deltaStarts.y) / lineVector.y;
 
@@ -2841,7 +2801,7 @@ class Bezier implements IParametric {
 			} else {
 				// прямая имеет обе ненулевых координаты, нормируем одну по другой, и собираем одно квадратное уравнение относительно t2.
 				// line has two nonzero coordinates, we normalize one to another, and collect a quadratic equation relatively to t2.
-				const normalizationCoefficient : Number = lineVector.y / lineVector.x;
+				var normalizationCoefficient = lineVector.y / lineVector.x;
 
 				coefficientInPower2 = diagonalVector.x * normalizationCoefficient - diagonalVector.y;
 				coefficientInPower1 = 2 * (startToControlVector.x * normalizationCoefficient - startToControlVector.y);
@@ -2850,13 +2810,13 @@ class Bezier implements IParametric {
 
 			solutionsForCurve = Equations.solveQuadraticEquation(coefficientInPower2, coefficientInPower1, coefficientInPower0);
 
-			if (!solutionsForCurve) {
+			if (solutionsForCurve == null) {
 				// вообще, такого быть не может - если кривая совпала с прямой, то она сама прямая, и это обработалось в начале метода
 				// in general, this can not happen - if the curve coincided with the line, then it is a straight line, and it is processed in the beginning of the method
 				return null;
 			}
 
-			for (i = 0;i < solutionsForCurve.length; i++) {
+			for (i in 0...solutionsForCurve.length) {
 				solutionForCurve = solutionsForCurve[i];
 				solutionForLine = -(diagonalVector.x * Math.pow(solutionForCurve, 2) + 2 * startToControlVector.x * solutionForCurve + deltaStarts.x) / lineVector.x;
 
@@ -2883,8 +2843,8 @@ class Bezier implements IParametric {
 	 * @return Intersection
 	 * 
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2893,7 +2853,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var target:Bezier = new Bezier(new Point(100, 100), new Point(200, 200), new Point(300, 400));
 	 *	var intersection:Intersection = bezier.intersectionBezier(target);
 	 *	trace(intersection);
@@ -2919,8 +2879,8 @@ class Bezier implements IParametric {
 	 * @return Intersection
 	 * 
 	 * @example <listing version="3.0">
-	 *	import flash.geom.Bezier;
-	 * 	import flash.geom.Point;
+	 *	import bezier.Bezier;
+	 * 	import deep.math.Point;
 	 *	
 	 *	function randomPoint():Point {
 	 *		return new Point(Math.random()&#42;stage.stageWidth, Math.random()&#42;stage.stageHeight);
@@ -2929,7 +2889,7 @@ class Bezier implements IParametric {
 	 *		return new Bezier(randomPoint(), randomPoint(), randomPoint());
 	 *	}
 	 *	
-	 *	const bezier:Bezier = randomBezier();
+	 *	var bezier:Bezier = randomBezier();
 	 *	var target:Bezier = new Bezier(new Point(100, 100), new Point(200, 200), new Point(300, 400));
 	 *	var intersection:Intersection = bezier.intersectionBezier(target);
 	 *	trace(intersection);
@@ -2941,18 +2901,17 @@ class Bezier implements IParametric {
 	 * @lang rus
 	 */
 	public function intersectionBezier(target : Bezier) : Intersection {
-		var intersection : Intersection = null;
-		var i : int;
+		var intersection:Intersection = null;
 
-		const curveAsPoint : Point = this.asPoint();
-		if (curveAsPoint) {
+		var curveAsPoint = this.asPoint();
+		if (curveAsPoint != null) {
 			intersection = target.intersectionPoint(curveAsPoint);
 			intersection.switchCurrentAndTarget();
 			return intersection;
 		}
 
-		const curveAsLine : Line = this.asLine();
-		if (curveAsLine) {
+		var curveAsLine = this.asLine();
+		if (curveAsLine != null) {
 			intersection = target.intersectionLine(curveAsLine);
 			intersection.switchCurrentAndTarget();
 			intersection.translateCurrentIterators(curveAsLine, this);
@@ -2960,15 +2919,15 @@ class Bezier implements IParametric {
 			return intersection;
 		}
 
-		const targetAsPoint : Point = target.asPoint();
-		if (targetAsPoint) {
-			intersection = this.intersectionPoint(targetAsPoint);
+		var targetAsPoint = target.asPoint();
+		if (targetAsPoint != null) {
+			intersection = intersectionPoint(targetAsPoint);
 			return intersection;
 		}
 
-		var targetAsLine : Line = target.asLine();
-		if (targetAsLine) {
-			intersection = this.intersectionLine(targetAsLine);
+		var targetAsLine = target.asLine();
+		if (targetAsLine != null) {
+			intersection = intersectionLine(targetAsLine);
 			intersection.translateTargetIterators(targetAsLine, target);
 
 			return intersection;
@@ -2977,70 +2936,70 @@ class Bezier implements IParametric {
 		// если ни одна из проверок не прошла, значит у нас две настоящих невырожденных кривых
 		// решаем чистый случай!
 
-		const startToControlVector : Point = POINT0;
+		var startToControlVector = POINT0;
 		startToControlVector.x = control.x - start.x;
 		startToControlVector.y = control.y - start.y;
 
-		const diagonalVector : Point = POINT1;
+		var diagonalVector = POINT1;
 		diagonalVector.x = start.x - 2 * control.x + end.x;
 		diagonalVector.y = start.y - 2 * control.y + end.y;
 
-		const targetStartToControlVector : Point = POINT2;
+		var targetStartToControlVector = POINT2;
 		targetStartToControlVector.x = target.control.x - target.start.x;
 		targetStartToControlVector.y = target.control.y - target.start.y;
 
-		const targetDiagonalVector : Point = POINT3;
+		var targetDiagonalVector = POINT3;
 		targetDiagonalVector.x = target.start.x - 2 * target.control.x + target.end.x;
 		targetDiagonalVector.y = target.start.y - 2 * target.control.y + target.end.y;
 
-		const ax1 : Number = diagonalVector.x,
-		ay1 : Number = diagonalVector.y,
-			  
-		bx1 : Number = 2 * startToControlVector.x,
-		by1 : Number = 2 * startToControlVector.y,
-			  
-		cx1 : Number = startPoint.x,
-		cy1 : Number = startPoint.y,
-			  
-		ax2 : Number = targetDiagonalVector.x,
-		ay2 : Number = targetDiagonalVector.y,
-			  
-		bx2 : Number = 2 * targetStartToControlVector.x,
-		by2 : Number = 2 * targetStartToControlVector.y,
-			  
-		cx2 : Number = target.startPoint.x,
-		cy2 : Number = target.startPoint.y,
-				 
-		cx : Number = cx1 - cx2,              
-		cy : Number = cy1 - cy2;
+		var ax1 = diagonalVector.x,
+		ay1 = diagonalVector.y,
+		
+		bx1 = 2 * startToControlVector.x,
+		by1 = 2 * startToControlVector.y,
+		
+		cx1 = start.x,
+		cy1 = start.y,
+		
+		ax2 = targetDiagonalVector.x,
+		ay2 = targetDiagonalVector.y,
+		
+		bx2 = 2 * targetStartToControlVector.x,
+		by2 = 2 * targetStartToControlVector.y,
+		
+		cx2 = target.start.x,
+		cy2 = target.start.y,
+		
+		cx = cx1 - cx2,              
+		cy = cy1 - cy2;
 
 		// решение «в лоб»
-		const	part1 : Number = (ax2 * ay1 - ax1 * ay2),
-		part2 : Number = (-ay2 * bx1 + ax2 * by1),
-		part3 : Number = (bx1 * bx1 + 2 * ax1 * cx),
-		part4 : Number = (ay1 * bx2 - ax1 * by2),
-		part5 : Number = (by1 * by1 + 2 * ay1 * cy),
-		part6 : Number = (bx2 * bx2 + 2 * ax2 * cx),
-		part7 : Number = (bx1 * by1 + ax1 * cy),
-		part8 : Number = (bx2 * by1 - bx1 * by2),
-		part9 : Number = (by1 * cx + bx1 * cy),
-		part10 : Number = (-bx2 * by1 + bx1 * by2),
-		part11 : Number = (-by2 * cx + bx2 * cy),
-		part12 : Number = (-by2 * cx + bx2 * cy);
+		var	part1 = (ax2 * ay1 - ax1 * ay2),
+		part2 = (-ay2 * bx1 + ax2 * by1),
+		part3 = (bx1 * bx1 + 2 * ax1 * cx),
+		part4 = (ay1 * bx2 - ax1 * by2),
+		part5 = (by1 * by1 + 2 * ay1 * cy),
+		part6 = (bx2 * bx2 + 2 * ax2 * cx),
+		part7 = (bx1 * by1 + ax1 * cy),
+		part8 = (bx2 * by1 - bx1 * by2),
+		part9 = (by1 * cx + bx1 * cy),
+		part10 = (-bx2 * by1 + bx1 * by2),
+		part11 = (-by2 * cx + bx2 * cy),
+		part12 = (-by2 * cx + bx2 * cy);
 
-		const   A : Number = -part1 * part1,
-		B : Number = -2 * part1 * part2,
-		C : Number = -ay2 * ay2 * part3 - ax2 * (by2 * part4 + ax2 * part5) + ay2 * (-ax1 * bx2 * by2 + ay1 * part6 + 2 * ax2 * part7),
-		D : Number = -2 * ay2 * ay2 * bx1 * cx + ay2 * (bx2 * part8 + 2 * ax2 * part9) + ax2 * (part10 * by2 - 2 * ax2 * by1 * cy),
-		E : Number = -ay2 * ay2 * cx * cx + ay2 * (bx2 * part11 + 2 * ax2 * cx * cy) - ax2 * (part12 * by2 + ax2 * cy * cy);
+		var A = -part1 * part1,
+		B = -2 * part1 * part2,
+		C = -ay2 * ay2 * part3 - ax2 * (by2 * part4 + ax2 * part5) + ay2 * (-ax1 * bx2 * by2 + ay1 * part6 + 2 * ax2 * part7),
+		D = -2 * ay2 * ay2 * bx1 * cx + ay2 * (bx2 * part8 + 2 * ax2 * part9) + ax2 * (part10 * by2 - 2 * ax2 * by1 * cy),
+		E = -ay2 * ay2 * cx * cx + ay2 * (bx2 * part11 + 2 * ax2 * cx * cy) - ax2 * (part12 * by2 + ax2 * cy * cy);
 
-		const solutionsForCurve : Array = Equations.solveEquation(A, B, C, D, E);
+		var solutionsForCurve = Equations.solveEquation(A, B, C, D, E);
 
 		intersection = new Intersection();
 
 		// поворачиваем кривую в вертикальное положение. Решение будет одно и только одно.
 		// turn a curve in a vertical position. There will be only one solution.
-		var	tga : Number, sina : Number, cosa : Number;
+		var	tga:Float, sina:Float, cosa:Float;
 
 		if (Math.abs(ay2) > PRECISION) {
 			tga = -ax2 / ay2;
@@ -3052,19 +3011,19 @@ class Bezier implements IParametric {
 			cosa = 0;
 		}
 
-		const	bxn : Number = bx2 * cosa + by2 * sina,
-		cxn : Number = cx2 * cosa + cy2 * sina;
+		var	bxn = bx2 * cosa + by2 * sina,
+		cxn = cx2 * cosa + cy2 * sina;
 
-		var	pointSolve : Point;
+		var	pointSolve:Point;
 
 		// бесконечное множество решений. То есть есть совпадение кривых
 		// infinite set of solutions. That is a coincidence of the curves
 		if ((Math.abs(A) < PRECISION) && (Math.abs(B) < PRECISION) && (Math.abs(C) < PRECISION) && (Math.abs(D) < PRECISION) && (Math.abs(E) < PRECISION)) {
-			var	time1 : Number,
-			time2 : Number,
+			var	time1:Float,
+			time2:Float,
 				
-			rt1 : Number,
-			rt2 : Number;
+			rt1:Float,
+			rt2:Float;
 
 			pointSolve = getPoint(0);
 			time1 = (pointSolve.x * cosa + pointSolve.y * sina - cxn) / bxn;
@@ -3094,13 +3053,13 @@ class Bezier implements IParametric {
 			return intersection;
 		}
 
-		for (i = 0 ;i < solutionsForCurve.length; i++) {
-			var solutionForCurve : Number = solutionsForCurve[i];
-			var solutionForTarget : Number;
+		for (i in 0...solutionsForCurve.length) {
+			var solutionForCurve = solutionsForCurve[i];
+			var solutionForTarget:Float;
 
 			pointSolve = getPoint(solutionForCurve);
-			var ox : Number = pointSolve.x * cosa + pointSolve.y * sina;
-			solutionForTarget = bxn ? (ox - cxn) / bxn : 0.5;
+			var ox = pointSolve.x * cosa + pointSolve.y * sina;
+			solutionForTarget = bxn != 0 ? (ox - cxn) / bxn : 0.5;
 
 			intersection.addIntersection(solutionForCurve, solutionForTarget, this.isSegment, target.isSegment);
 		}
@@ -3123,7 +3082,7 @@ class Bezier implements IParametric {
 	 * @return String object description
 	 * 
 	 */
-	public function toString() : String {
-		return 	"(start:" + startPoint + ", control:" + controlPoint + ", end:" + endPoint + ")";
+	public function toString():String {
+		return 	"(start:" + start + ", control:" + control + ", end:" + end + ")";
 	}
 }
