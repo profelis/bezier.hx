@@ -3,7 +3,7 @@
   "url": "http://github.com/profelis/bezier.hx",
   "license": "MIT",
   "tags": [ ],
-  "description": "Provides support for parsing and displaying SWF content",
+  "description": "Parametric curves: bezier second-order curve and line",
   "version": "1.0.0",
   "releasenote": "Initial release",
   "contributors": [ "deep" ],
