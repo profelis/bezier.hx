@@ -3,7 +3,7 @@
   "url": "http://github.com/profelis/bezier.hx",
   "license": "MIT",
   "tags": [ ],
-  "description": "Parametric curves: bezier second-order curve and line",
+  "description": "Parametric curves: bezier second-order curve and line. A Haxe port of AS3 library https://code.google.com/p/bezier/",
   "version": "1.0.0",
   "releasenote": "Initial release",
   "contributors": [ "deep" ],
