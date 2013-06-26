@@ -78,13 +78,11 @@ class Equations {
 	 * @see solveEquation
 	 **/
 
-	public static function solveLinearEquation(A:Float, B:Float):Array<Float> {
+	public inline static function solveLinearEquation(A:Float, B:Float):Array<Float> {
 		
-		if (Math.abs(A) < PRECISION) {
-			if (Math.abs(B) < PRECISION) return null;
-			else return [];
-		}
-		return [-B/A];
+		return if (Math.abs(A) < PRECISION) {
+			if (Math.abs(B) < PRECISION) null; else [];
+		} else [-B/A];
 	}
 
 	
@@ -250,7 +248,7 @@ class Equations {
 
 	// Функция для возведения в степень. Работает лучше, чем Math.pow, но все равно не идеально.
 	// Идеальная функция возведения в произвольную действительную степень будет иметь комплексный результат.
-	private static function mathPower(x:Float, p:Float):Float {
+	inline static function mathPower(x:Float, p:Float):Float {
 		return if (p == 0) 1;
 				else if (x > 0) Math.exp(Math.log(x)*p);
 				else if (x < 0) -Math.exp(Math.log(-x)*p);

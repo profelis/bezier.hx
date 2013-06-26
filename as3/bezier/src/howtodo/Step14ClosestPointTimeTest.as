@@ -43,7 +43,7 @@ package howtodo {
 		}
 
 		private function updateOutText(time : Number) : void {
-			fpsTextField.text = "1000 iterations duration - " + time + "milliseconds\n" + (time / 1000) + " milliseconds spent on single method call";
+			fpsTextField.text = "50000 iterations duration - " + time + "milliseconds\n" + (time / 1000) + " milliseconds spent on single method call";
 		}
 
 		private function addTextField(textField : TextField, x : Number, y : Number) : void {
@@ -68,7 +68,7 @@ package howtodo {
 			var closestTime : Number;
 
 			var calculationTime : Number = getTimer();
-			for(var i : int = 0;i < 1000; i++) {
+			for(var i : int = 0;i < 50000; i++) {
 				closestTime = bezier.getClosest(mouse);		
 			}
 			calculationTime = getTimer() - calculationTime;

@@ -5,9 +5,9 @@ import howtodo.view.DragPoint;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.events.Event;
-import flash.geom.Bezier;
-import flash.geom.IParametric;
-import flash.geom.Line;
+import bezier.Bezier;
+import bezier.IParametric;
+import bezier.Line;
 
 class Step12Drawing extends Sprite {
 
@@ -65,8 +65,8 @@ class Step12Drawing extends Sprite {
 
 			else  {
 				var endPointTime : Float = line.getTimeByDistance(drawLength - linesLength);
-				var endBezier : Bezier = try cast(line, Bezier) catch(e) null;
-				var endLine : Line = try cast(line, Line) catch(e) null;
+				var endBezier : Bezier = cast(line, Bezier);
+				var endLine : Line = cast(line, Line);
 				if(endBezier)  {
 					drawLine(endBezier.getSegment(0, endPointTime));
 				}
@@ -121,12 +121,12 @@ class Step12Drawing extends Sprite {
 		return randomDragPoint;
 	}
 
-	function drawLine(line : IParametric) : Void {
-		if(!line)  {
+	function drawLine(line : IParametric<Dynamic>) : Void {
+		if(line == null)  {
 			return;
 		}
 		graphics.moveTo(line.start.x, line.start.y);
-		var bezier : Bezier = try cast(line, Bezier) catch(e) null;
+		var bezier : Bezier = cast(line, Bezier);
 		if(bezier)  {
 			graphics.curveTo(bezier.control.x, bezier.control.y, bezier.end.x, bezier.end.y);
 		}

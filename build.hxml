@@ -3,3 +3,4 @@
 -swf-version 10
 -main Test
 -swf-header 800:600:60:FFFFFF
+--flash-strict

@@ -2,10 +2,10 @@ package howtodo;
 
 import flash.events.Event;
 import flash.events.KeyboardEvent;
-import flash.geom.Bezier;
-import flash.geom.Intersection;
-import flash.geom.Line;
-import flash.geom.Point;
+import bezier.Bezier;
+import bezier.Intersection;
+import bezier.Line;
+import deep.math.Point;
 import flash.ui.Keyboard;
 import howtodo.view.DragPoint;
 
