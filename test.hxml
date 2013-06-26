@@ -1,4 +1,5 @@
--lib bezier
+#-lib bezier
+-cp src/main/haxe
 -cp src/test/haxe
 -neko target/bezier-test.n
 -main Tests

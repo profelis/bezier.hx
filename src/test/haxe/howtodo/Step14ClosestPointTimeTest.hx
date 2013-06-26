@@ -39,7 +39,7 @@ class Step14ClosestPointTimeTest extends BezierUsage {
 	}
 
 	function updateOutText(time : Float) : Void {
-		fpsTextField.text = "50000 iterations duration - " + time + " milliseconds\n" 
+		fpsTextField.text = "1000 iterations duration - " + time + " milliseconds\n" 
 		+ (time / 10000) + " milliseconds spent on single method call";
 	}
 
@@ -65,7 +65,7 @@ class Step14ClosestPointTimeTest extends BezierUsage {
 		var closestTime : Float = 0;
 		var calculationTime : Float = Lib.getTimer();
 		var i : Int = 0;
-		while(i < 50000) {
+		while(i < 1000) {
 			closestTime = bezier.getClosest(mouse);
 			i++;
 		}
