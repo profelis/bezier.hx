@@ -1,8 +1,46 @@
 #-lib bezier
 -cp src/main/haxe
 -cp src/test/haxe
--neko target/bezier-test.n
 -main Tests
+-dce full
+-neko target/bezier-test.n
+
+--next
+-cp src/main/haxe
+-cp src/test/haxe
+-main Tests
+-dce full
+-swf-version 10
+-swf target/bezier-test.swf
+
+--next
+-cp src/main/haxe
+-cp src/test/haxe
+-main Tests
+-dce full
+-js target/test.js
+
+--next
+-cp src/main/haxe
+-cp src/test/haxe
+-main Tests
+-dce full
+-java target/java
+
+--next
+-cp src/main/haxe
+-cp src/test/haxe
+-main Tests
+-dce full
+-cpp target/cpp
+
+--next
+-cp src/main/haxe
+-cp src/test/haxe
+-main Tests
+-dce full
+-cs target/cs
 
 --next
 -cmd neko target/bezier-test.n
+

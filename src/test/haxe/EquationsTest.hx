@@ -68,7 +68,7 @@ class EquationsTest extends TestCase
 		assertEquals(Equations.solveEquation(0, 1, 2, 1).join(","), "-1");
 		assertEquals(Equations.solveEquation(0, 4, 4, 4).join(","), "");
 		assertEquals(Equations.solveEquation(1, 3, -6, -8).join(","), "-4,-1,2");
-		assertEquals(Equations.solveEquation(8, 7, -4, 1).join(","), "-1.32396468861425");
+		assertEquals(Equations.solveEquation(8, 7, -4, 1).join(",").substr(0, 9), "-1.323964");
 	}
 	
 	function test5() {

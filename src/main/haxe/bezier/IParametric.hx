@@ -136,6 +136,13 @@ interface IParametric<T> {
 	function getSegmentLength(time:Float):Float;
 
 	// == intersections ==
+	
+	/**
+	 * Calculates and returns the intersection with Point
+	 * @return Intersection
+	 **/
+	function intersectionPoint(target:Point):Intersection;
+	
 	/**
 	 * Calculates and returns the intersection with Line
 	 * @return Intersection
@@ -147,7 +154,6 @@ interface IParametric<T> {
 	 * @return Intersection
 	 **/
 	function intersectionBezier(target:Bezier):Intersection;
-
 	
 	/**
 	 * Calculates and returns the string presentation of object

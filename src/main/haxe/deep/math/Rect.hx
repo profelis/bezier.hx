@@ -21,9 +21,6 @@ class Rect {
 	public var top(get, set):Float;
 	public var bottom(get, set):Float;
 	
-	public var topLeft(get, never):Point;
-	public var bottomRight(get, never):Point;
-	
 	inline function get_left():Float return x;
 	inline function set_left(v:Float):Float {
 		width -= v - x;
@@ -45,8 +42,8 @@ class Rect {
 		return v;
 	}
 	
-	inline function get_bottomRight() return new Point(x + width, y + height);
-	inline function get_topLeft() return new Point(x, y);
+	inline public function max() return new Point(x + width, y + height);
+	inline public function min() return new Point(x, y);
 	
 	inline public function clone():Rect {
 		return new Rect(x, y, width, height);
@@ -57,6 +54,32 @@ class Rect {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public function intersect(b:Rect):Null<Rect> {
+		
+		var x0 = x < b.x ? b.x : x;
+		var x1 = right > b.right ? b.right : right;
+		
+		if (x1 <= x0) return null;
+		
+		var y0 = y < b.y ? b.y : y;
+		var y1 = bottom > b.bottom ? b.bottom : bottom;
+		
+		if (y1 <= y0) return null;
+		
+		return new Rect(x0, y0, x1 - x0, y1 - y0);
+	}
+	
+	public function union(b:Rect):Rect {
+		
+		var x0 = x > b.x ? b.x : x;
+		var x1 = right < b.right ? b.right : right;
+		var y0 = y > b.y ? b.y : y;
+		var y1 = bottom < b.bottom ? b.bottom : bottom;
+		
+		return new Rect(x0, y0, x1 - x0, y1 - y0);
+		
 	}
 	
 	public function intersects(b:Rect):Bool {
@@ -73,7 +96,15 @@ class Rect {
 	}
 	
 	inline public function containsPoint(p:Point):Bool {
-		return p.x >= x && p.x <= x + width && p.y >= y && p.y <= y + height;
+		return p.x >= x && p.x <= right && p.y >= y && p.y <= bottom;
+	}
+	
+	inline public function containsRect(rect:Rect):Bool {
+		return rect.x >= x && rect.y >= y && rect.right <= right && rect.bottom <= bottom;
+	}
+	
+	inline public function equals(b:Rect):Bool {
+		return x == b.x && y == b.y && width == b.width && height == b.height;
 	}
 	
 	public function toString() {
