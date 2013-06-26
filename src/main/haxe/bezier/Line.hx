@@ -637,8 +637,8 @@ import deep.math.Rect;
 	 * @lang rus
 	 */	
 
-	public function getPoint(time:Float, point:Point = null):Point 
-	{
+	public function getPoint(time:Float, point:Point = null):Point {
+		
 		if (Math.isNaN(time)) return null;
 		point = point != null ? point : new Point();
 		point.x = start.x + (end.x - start.x) * time;
@@ -712,6 +712,7 @@ import deep.math.Rect;
 	 */ 
 
 	public function getTimeByDistance(distance:Float):Float {
+		
 		if (Math.isNaN(distance)) return Math.NaN;
 		var lineLength = this.length;
 		
@@ -806,8 +807,8 @@ import deep.math.Rect;
 	 * @lang rus
 	 */
 
-	public function setPoint(time:Float, ?x:Float, ?y:Float):Void 
-	{
+	public function setPoint(time:Float, ?x:Float, ?y:Float):Void {
+		
 		if ((x == null || Math.isNaN(x)) && (y == null || Math.isNaN(y))) return;
 		var point = getPoint(time);
 		if (x != null && !Math.isNaN(x)) point.x = x;
@@ -1322,8 +1323,8 @@ import deep.math.Rect;
 	 * @playerversion Flash 9.0
 	 */
 
-	public function intersectionLine(targetLine:Line):Intersection 
-	{
+	public function intersectionLine(targetLine:Line):Intersection {
+		
 		var intersection = new Intersection();
 		
 		if (isSegment && targetLine.isSegment) {
@@ -1448,8 +1449,7 @@ import deep.math.Rect;
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */		   		
-	public function intersectionBezier(target:Bezier):Intersection 
-	{
+	public function intersectionBezier(target:Bezier):Intersection {
 		var intersection = target.intersectionLine(this);
 		intersection.switchCurrentAndTarget();
 		return intersection;
@@ -1534,8 +1534,8 @@ import deep.math.Rect;
 	 * 
 	 **/
 
-	public function getClosest(fromPoint:Point):Float 
-	{
+	public function getClosest(fromPoint:Point):Float {
+		
 		var startToEndVector = POINT0;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
@@ -1557,8 +1557,8 @@ import deep.math.Rect;
 
 	
 	
-	public function getExistedPointIterators(point:Point):Array<Float>
-	{
+	public function getExistedPointIterators(point:Point):Array<Float> {
+		
 		var startToEndVector = POINT0;
 		startToEndVector.x = end.x - start.x;
 		startToEndVector.y = end.y - start.y;
@@ -1603,8 +1603,7 @@ import deep.math.Rect;
 	 * @langversion 3.0
 	 * @playerversion Flash 9.0
 	 */
-	public function toString():String 
-	{
+	public function toString():String {
 		return 	"(start:" + start + ", end:" + end + ")";
 	}
 }

@@ -196,7 +196,7 @@ package howtodo {
 		}
 
 		protected function showIntersection(point : Point, small : Boolean, time : Number) : DragPoint {
-			trace("time: " +time);
+			//trace("time: " +time);
 			if (point is Point) {
 				var intersection : DragPoint = new DragPoint();
 				intersection.position = point;

@@ -72,7 +72,7 @@ class Point {
 		}
 	}
 	
-	public function equals(b:Point) {
+	inline public function equals(b:Point) {
 		return x == b.x && y == b.y;
 	}
 	

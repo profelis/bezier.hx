@@ -1170,10 +1170,8 @@ import deep.math.Rect;
 	
 	public var internalCentroid(get, never):Point;
 	 
-	function get_internalCentroid():Point {
-		var x = (start.x + end.x) * 0.4 + control.x * 0.2;
-		var y = (start.y + end.y) * 0.4 + control.y * 0.2;
-		return new Point(x, y);
+	inline function get_internalCentroid():Point {
+		return new Point((start.x + end.x) * 0.4 + control.x * 0.2, (start.y + end.y) * 0.4 + control.y * 0.2);
 	}
 
 	/**
@@ -1241,10 +1239,8 @@ import deep.math.Rect;
 	
 	public var externalCentroid(get, never):Point;
 	
-	function get_externalCentroid():Point {
-		var x = (start.x + end.x) * 0.2 + control.x * 0.6 ;
-		var y = (start.y + end.y) * 0.2 + control.y * 0.6;
-		return new Point(x, y);
+	inline function get_externalCentroid():Point {
+		return new Point((start.x + end.x) * 0.2 + control.x * 0.6, (start.y + end.y) * 0.2 + control.y * 0.6);
 	}
 
 	/* *
@@ -1310,10 +1306,8 @@ import deep.math.Rect;
 	
 	public var triangleCentroid(get, never):Point;
 	
-	function get_triangleCentroid():Point {
-		var x = (start.x + end.x + control.x) / 3 ;
-		var y = (start.y + end.y + control.y) / 3;
-		return new Point(x, y);
+	inline function get_triangleCentroid():Point {
+		return new Point((start.x + end.x + control.x) / 3, (start.y + end.y + control.y) / 3);
 	}
 
 	/* *
