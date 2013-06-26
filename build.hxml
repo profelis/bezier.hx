@@ -1,4 +1,4 @@
--cp src/main/haxe
+-lib bezier
 -cp src/test/haxe
 -swf target/bezier.swf
 -swf-version 10
