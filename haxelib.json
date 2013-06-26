@@ -1,0 +1,11 @@
+{
+  "name": "bezier.hx",
+  "url": "http://github.com/profelis/bezier.hx",
+  "license": "MIT",
+  "tags": [ ],
+  "description": "Provides support for parsing and displaying SWF content",
+  "version": "1.0.0",
+  "releasenote": "Initial release",
+  "contributors": [ "deep" ],
+  "classPath" : "src/main/haxe"
+}

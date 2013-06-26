@@ -1,8 +1,2 @@
 /target
 /*.hxproj
-/as3/bezier/bin
-
-/as3/bezier/obj
-/as3/bezier/*.as3proj
-
-/as3/bezier/*.lxml
