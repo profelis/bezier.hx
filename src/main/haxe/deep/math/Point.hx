@@ -17,9 +17,14 @@ class Point {
 	}
 	
 	public var length(get, never):Float;
+	public var lengthSq(get, never):Float;
 	
 	inline function get_length() {
 		return len(x, y);
+	}
+	
+	inline function get_lengthSq() {
+		return x * x + y * y;
 	}
 	
 	public var angle(get, never):Float;
@@ -84,6 +89,12 @@ class Point {
 		return len(a.x - b.x, a.y - b.y);
 	}
 	
+	inline static public function distanceSq(a:Point, b:Point) {
+		var x = a.x - b.x;
+		var y = a.y - b.y;
+		return x * x + y * y;
+	}
+	
 	inline static public function interpolate(a:Point, b:Point, f:Float) {
 		return new Point(b.x + (a.x - b.x) * f, b.y + (a.y - b.y) * f);
 	}
@@ -97,7 +108,7 @@ class Point {
 	}
 	
 	#if (flash || nme || openfl)
-	inline public function toGeomPoint(out:flash.geom.Point):flash.geom.Point {
+	inline public function toGeomPoint(out:flash.geom.Point = null):flash.geom.Point {
 		if (out == null) 
 			return new flash.geom.Point(x, y);
 		else {

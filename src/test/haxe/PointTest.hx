@@ -25,6 +25,7 @@ class PointTest extends TestCase
 		assertEquals(p.x, -3);
 		assertEquals(p.y, 4);
 		assertEquals(p.length, 5);
+		assertEquals(p.lengthSq, 25);
 		
 		p.normalize();
 		assertEquals(p.length, 1);
@@ -59,9 +60,11 @@ class PointTest extends TestCase
 		
 		a.x = 10;
 		assertEquals(Point.distance(a, b), 10);
+		assertEquals(Point.distanceSq(a, b), 100);
 		
 		b.x = 5;
 		assertEquals(Point.distance(a, b), 5);
+		assertEquals(Point.distanceSq(a, b), 25);
 		
 		a.y = 5;
 		b.y = -3;

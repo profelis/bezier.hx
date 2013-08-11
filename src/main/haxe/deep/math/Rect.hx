@@ -112,7 +112,7 @@ class Rect {
 	}
 	
 	#if (flash || nme || openfl)
-	inline public function toGeomRect(out:flash.geom.Rectangle):flash.geom.Rectangle {
+	inline public function toGeomRect(out:flash.geom.Rectangle = null):flash.geom.Rectangle {
 		if (out == null) 
 			return new flash.geom.Rectangle(x, y, width, height);
 		else {
