@@ -1544,10 +1544,9 @@ import deep.math.Rect;
 			
 		if(startToEndLength < PRECISION) return 0;
 		
-		var selfProjection = - startToEndVector.y * start.x + startToEndVector.x * start.y;
-		var projection = (startToEndVector.y * fromPoint.x + startToEndVector.x * fromPoint.y + selfProjection) / (startToEndLength * startToEndLength);
-		var point = new Point(fromPoint.x - startToEndVector.y * projection, fromPoint.y - startToEndVector.x * projection);
-		var time = startToEndVector.x != 0 ? (start.x - point.x) / startToEndVector.x : (point.y - start.y) / startToEndVector.y;
+		var u = (startToEndVector.x * (fromPoint.x - start.x) + startToEndVector.y * (fromPoint.y - start.y)) / (startToEndLength * startToEndLength);
+        var point = new Point(start.x + startToEndVector.x * u, start.y + startToEndVector.y * u);
+        var time = Point.distance(point, start) / startToEndLength;
 				
 		if (!isSegment) return time;
 		if(time < 0) return 0;

@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": [ "bezier", "cross" ],
   "description": "Parametric curves: bezier second-order curve and line. A Haxe port of AS3 library https://code.google.com/p/bezier/",
-  "version": "1.0.1",
-  "releasenote": "IParametric.intersectionPoint method",
+  "version": "1.0.3",
+  "releasenote": "Point.getClosest fix",
   "contributors": [ "deep" ]
 }
