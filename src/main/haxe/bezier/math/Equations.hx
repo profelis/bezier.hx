@@ -80,9 +80,8 @@ class Equations {
 
 	public inline static function solveLinearEquation(A:Float, B:Float):Array<Float> {
 		
-		return if (Math.abs(A) < PRECISION) {
-			if (Math.abs(B) < PRECISION) null; else [];
-		} else [-B/A];
+		return if (Math.abs(A) >= PRECISION) [-B/A]
+		else if (Math.abs(B) < PRECISION) null; else [];
 	}
 
 	
