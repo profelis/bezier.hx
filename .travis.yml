@@ -2,8 +2,6 @@
 language: c # change this to objective-c to test on a mac machine
 
 env:
-  HAXE_VER:
-    - "3.2.0"
   global:
     #- OS=mac # add this too to let the script know that the OS is a mac
     # - ARCH=i686 # add this to run in 32-bit mode. See availability at README
@@ -25,7 +23,7 @@ env:
     - TARGET=swf
     # - TARGET=as3
     - TARGET=java
-    - TARGET=cs
+    - TARGET=cs HAXE_VER=3.1.3
 #    - TARGET=swf8
     - TARGET=python
       # optional: PYTHONCMD
