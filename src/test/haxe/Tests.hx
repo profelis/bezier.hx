@@ -15,7 +15,16 @@ class Tests
 		r.add(new PointTest());
 		r.add(new RectTest());
 		r.add(new LineTest());
-		r.run();
+		var result = r.run();
+
+		trace('success: ${result}');
+
+		var status:UInt = result ? 0 : 1;
+		#if flash
+		flash.system.System.exit(status);
+		#elseif sys
+		Sys.exit(status);
+		#end
 	}
 	
 }

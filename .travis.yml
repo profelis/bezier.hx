@@ -1,0 +1,46 @@
+# example travis.yml haxe configuration
+language: c # change this to objective-c to test on a mac machine
+
+env:
+  global:
+    #- OS=mac # add this too to let the script know that the OS is a mac
+    # - ARCH=i686 # add this to run in 32-bit mode. See availability at README
+      # SAUCE_ACCESS_KEY
+    - secure: "YOUR_ENCRYPTED_SAUCE_ACCESS_KEY" # if you want to use SauceLabs
+      # SAUCE_USERNAME
+    - secure: "YOUR_ENCRYPTED_SAUCE_USERNAME" # if you want to use SauceLabs
+  matrix:
+    - TARGET=neko 
+    - TARGET=interp
+    - TARGET=macro
+      # optional: MACROFLAGS: specify the flags that are unique to building/running with --macro arguments
+    - TARGET=js TOOLCHAIN=default # target is tested by node.js
+      # optional: NODECMD: set the command to be run by nodejs
+    - TARGET=js TOOLCHAIN=browser # target is tested by browsers / phantomjs
+      # optional: SAUCE_BROWSERS: specify the .json file that specifies the SauceLabs browsers to test. Defaults to `.sauce-browsers.json`
+    - TARGET=php
+    - TARGET=cpp
+    - TARGET=swf
+    # - TARGET=as3
+    - TARGET=java
+    - TARGET=cs
+#    - TARGET=swf8
+    - TARGET=python
+      # optional: PYTHONCMD
+    
+
+matrix:
+  fast_finish: true
+
+before_install: # clone travis-hx repo
+  - travis_retry git clone --depth=50 --branch=master git://github.com/waneck/travis-hx.git ~/travis-hx
+
+install: # setup the target
+  - ~/travis-hx/setup.sh
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  # build the target. This will call haxe with the HXFLAGS and HXFLAGS_EXTRA environment variables
+  - HXFLAGS="-cp src/main/haxe -cp src/test/haxe -main Tests" ~/travis-hx/build.sh
+  # run the tests
+  - ~/travis-hx/runtests.sh $FILENAME # this will set the $FILENAME defined on the environment variable to run the tests
